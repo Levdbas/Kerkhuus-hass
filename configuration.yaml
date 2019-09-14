@@ -1,0 +1,52 @@
+homeassistant:
+    # Name of the location where Home Assistant is running
+    name: Kerkhuus
+    # Location required to calculate the time the sun rises and sets
+    latitude: !secret latitude
+    longitude: !secret longitude
+    # Impacts weather/sunrise data (altitude above sea level in meters)
+    elevation: !secret elevation
+    unit_system: metric
+    time_zone: Europe/Amsterdam
+    packages: !include_dir_named packages
+default_config:
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+http:
+    base_url: !secret duckdns
+    ssl_certificate: /ssl/fullchain.pem
+    ssl_key: /ssl/privkey.pem
+
+# Discover some devices automatically
+discovery:
+#themes
+frontend:
+  themes: !include themes.yaml
+  
+# Text to speech
+tts:
+  - platform: google_translate
+    base_url: !secret tts_url
+  
+#weer 
+weather:
+  - platform: buienradar
+
+tuya:
+  username: erikvanderbas@live.nl
+  password: !secret smart_switch_pw
+  country_code: 31
+  platform: smart_life
+
+# Set up Unifi controller.
+unifi:
+  controllers:
+    - host: unifi
+      site: !secret unifi_site
+      ssid_filter:
+        - !secret unifi_ssid
+ 
+system_health:
+sensor: !include sensors.yaml
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml

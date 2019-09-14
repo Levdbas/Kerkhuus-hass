@@ -1,0 +1,33 @@
+ 'bedroom_wakeup':
+  alias:  Wakker worden!
+  sequence:
+  - service: light.turn_on
+    data_template:
+      entity_id: light.hue_bloom_1
+      brightness: 1
+      xy_color: [0.3698, 0.3723]
+  - delay:
+      seconds: 1
+  - service: light.turn_on
+    data_template:
+      entity_id: light.hue_bloom_1
+      brightness: 255
+      transition: "{{ alarm_offset | multiply(60) }}"
+  - delay:
+        minutes: "{{ alarm_offset | int }}"
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.20'
+    service: media_player.volume_set
+  - data:
+      entity_id: media_player.slaapkamer
+      sleep_time: 1800 #tijd in seconden
+    service: sonos.set_sleep_timer
+  - data:
+      entity_id: sonos.slaapkamer
+      shuffle: "true"
+    service: media_player.shuffle_set
+  - data:
+      entity_id: media_player.slaapkamer
+      source: Discover Weekly
+    service: media_player.select_source

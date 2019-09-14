@@ -1,0 +1,79 @@
+input_number:
+  alarm_monday_hour:
+    name: Uren
+    icon: mdi:timer
+    initial: 5
+    min: 0
+    max: 23
+    step: 1
+  alarm_monday_minutes:
+    name: Minuten
+    icon: mdi:timer
+    initial: 40
+    min: 0
+    max: 59
+    step: 1
+  alarm_monday_offset:
+    name: Transitie tijd
+    icon: mdi:blur-linear
+    initial: 10
+    min: 0
+    max: 60
+    step: 5
+    
+input_boolean:
+  alarm_monday_enable:
+    name: "Alarm aanzetten"
+
+
+sensor:
+  - platform: template
+    sensors:
+      alarm_monday_time:
+        friendly_name: 'Alarm Time'
+        value_template: >-
+          {{ "%0.02d:%0.02d" | format(states("input_number.alarm_monday_hour") | int, states("input_number.alarm_monday_minutes") | int) }}
+  - platform: template
+    sensors:
+      alarm_monday_time_minus_offset:
+        friendly_name: 'Offset Time'
+        value_template: >-
+          {{ '%0.02d:%0.02d' | format( ((((states('input_number.alarm_monday_hour') | int)*60 + (states('input_number.alarm_monday_minutes') | int) - (states('input_number.alarm_monday_offset'))| int)/60)| int),(((((((((states('input_number.alarm_monday_hour') | int)*60 + (states('input_number.alarm_monday_minutes') | int) - (states('input_number.alarm_monday_offset')) | int)/60)) - ((((states('input_number.alarm_monday_hour') | int)*60 + (states('input_number.alarm_monday_minutes') | int) - (states('input_number.alarm_monday_offset')) | int)/60)| int))*100) | int)*60/100) | round) ) }}
+group:
+  alarm_monday:
+    name: Maandag
+    entities:
+    - input_boolean.alarm_monday_enable
+    - sensor.alarm_monday_time
+    - sensor.alarm_monday_time_minus_offset
+    - input_number.alarm_monday_hour
+    - input_number.alarm_monday_minutes
+    - input_number.alarm_monday_offset
+    
+    
+# The automation for the Alarm clock.
+automation:
+- id: alarm_monday
+  alias: 'Wakker worden op maandag.'
+  trigger:
+    - platform: time_pattern
+      minutes: '/1'
+      seconds: 00
+  condition:
+    - condition: template
+      value_template: "{{ states.sensor.time.state == states.sensor.alarm_monday_time_minus_offset.state  }}"
+    - condition: state
+      entity_id: input_boolean.alarm_monday_enable  
+      state: 'on'
+    #- condition: time
+     # weekday: 
+      #  - fri
+  action:
+  - data:
+        variables:
+          alarm_enabled: input_boolean.alarm_monday_enable
+          alarm_time: sensor.alarm_monday_time
+          alarm_offset: sensor.alarm_monday_time_minus_offset
+    service: script.bedroom_wakeup
+
+    

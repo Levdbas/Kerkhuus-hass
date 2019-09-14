@@ -1,0 +1,9 @@
+- platform: pi_hole
+  host: localhost:4865
+  monitored_conditions:
+  - ads_blocked_today
+  - ads_percentage_today
+- platform: time_date
+  display_options:
+      - 'time'
+      - 'date'

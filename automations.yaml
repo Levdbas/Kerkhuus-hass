@@ -1,0 +1,55 @@
+- alias: Rule 1 Light on in the evening
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: -01:00:00
+  - platform: state
+    entity_id: group.all_devices
+    to: home
+  condition:
+  - condition: state
+    entity_id: group.all_devices
+    state: home
+  - condition: time
+    after: '16:00:00'
+    before: '23:00:00'
+  action:
+    service: homeassistant.turn_on
+    entity_id: group.bedroom
+  id: 85bd8dd708e247069337fc7c7c9649dd
+- id: '1568213287323'
+  alias: Weg in de ochtend.
+  trigger:
+  - entity_id: device_tracker.telefoon_erik
+    from: home
+    platform: state
+    to: not_home
+  - entity_id: device_tracker.oneplus5t
+    from: home
+    platform: state
+    to: not_home
+  condition:
+  - condition: state
+    entity_id: person.erik_van_der_bas
+    state: not_home
+  - condition: state
+    entity_id: person.marileen
+    state: not_home
+  action:
+  - data:
+      entity_id: all
+      language: nl
+      message: Erik, ga niet weg. Ik mis je.
+    service: tts.google_translate_say
+- id: '1568384852404'
+  alias: Zet de Stereo aan als de Chromecast begint te spelen.
+  trigger:
+  - entity_id: media_player.huiskamer
+    from: paused
+    platform: state
+    to: playing
+  condition: []
+  action:
+  - data:
+      entity_id: switch.living_music
+    service: homeassistant.turn_on
