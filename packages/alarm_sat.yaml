@@ -1,0 +1,72 @@
+input_number:
+  alarm_sat_hour:
+    name: Uren
+    icon: mdi:timer
+    min: 0
+    max: 23
+    step: 1
+  alarm_sat_minutes:
+    name: Minuten
+    icon: mdi:timer
+    min: 0
+    max: 59
+    step: 1
+  alarm_sat_offset:
+    name: Transitie tijd
+    icon: mdi:blur-linear
+    initial: 10
+    min: 0
+    max: 60
+    step: 5
+    
+input_boolean:
+  alarm_sat_enable:
+    name: "Alarm aanzetten"
+
+
+sensor:
+  - platform: template
+    sensors:
+      alarm_sat_time:
+        friendly_name: 'Alarm tijd'
+        value_template: >-
+          {{ "%0.02d:%0.02d" | format(states("input_number.alarm_sat_hour") | int, states("input_number.alarm_sat_minutes") | int) }}
+  - platform: template
+    sensors:
+      alarm_sat_time_minus_offset:
+        friendly_name: 'Transitie Tijd'
+        value_template: >-
+          {{ '%0.02d:%0.02d' | format( ((((states('input_number.alarm_sat_hour') | int)*60 + (states('input_number.alarm_sat_minutes') | int) - (states('input_number.alarm_sat_offset'))| int)/60)| int),(((((((((states('input_number.alarm_sat_hour') | int)*60 + (states('input_number.alarm_sat_minutes') | int) - (states('input_number.alarm_sat_offset')) | int)/60)) - ((((states('input_number.alarm_sat_hour') | int)*60 + (states('input_number.alarm_sat_minutes') | int) - (states('input_number.alarm_sat_offset')) | int)/60)| int))*100) | int)*60/100) | round) ) }}
+group:
+  alarm_sat:
+    name: Alarm zaterdag
+    entities:
+    - input_boolean.alarm_sat_enable
+    - sensor.alarm_sat_time
+    - sensor.alarm_sat_time_minus_offset
+    - input_number.alarm_sat_hour
+    - input_number.alarm_sat_minutes
+    - input_number.alarm_sat_offset
+    
+    
+# The automation for the Alarm clock.
+automation:
+- id: alarm_sat
+  alias: 'Wakker worden op zaterdag.'
+  trigger:
+    - platform: time_pattern
+      minutes: '/1'
+      seconds: 00
+  condition:
+    - condition: template
+      value_template: "{{ states.sensor.time.state == states.sensor.alarm_sat_time_minus_offset.state  }}"
+    - condition: state
+      entity_id: input_boolean.alarm_sat_enable  
+      state: 'on'
+    - condition: time
+      weekday: 
+        - sat
+  action:
+  - service: script.bedroom_wakeup
+    data_template:
+          alarm_offset: "{{states('input_number.alarm_sat_offset')| int }}"

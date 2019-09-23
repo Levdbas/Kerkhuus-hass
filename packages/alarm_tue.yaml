@@ -1,0 +1,72 @@
+input_number:
+  alarm_tue_hour:
+    name: Uren
+    icon: mdi:timer
+    min: 0
+    max: 23
+    step: 1
+  alarm_tue_minutes:
+    name: Minuten
+    icon: mdi:timer
+    min: 0
+    max: 59
+    step: 1
+  alarm_tue_offset:
+    name: Transitie tijd
+    icon: mdi:blur-linear
+    initial: 10
+    min: 0
+    max: 60
+    step: 5
+    
+input_boolean:
+  alarm_tue_enable:
+    name: "Alarm aanzetten"
+
+
+sensor:
+  - platform: template
+    sensors:
+      alarm_tue_time:
+        friendly_name: 'Alarm tijd'
+        value_template: >-
+          {{ "%0.02d:%0.02d" | format(states("input_number.alarm_tue_hour") | int, states("input_number.alarm_tue_minutes") | int) }}
+  - platform: template
+    sensors:
+      alarm_tue_time_minus_offset:
+        friendly_name: 'Transitie Tijd'
+        value_template: >-
+          {{ '%0.02d:%0.02d' | format( ((((states('input_number.alarm_tue_hour') | int)*60 + (states('input_number.alarm_tue_minutes') | int) - (states('input_number.alarm_tue_offset'))| int)/60)| int),(((((((((states('input_number.alarm_tue_hour') | int)*60 + (states('input_number.alarm_tue_minutes') | int) - (states('input_number.alarm_tue_offset')) | int)/60)) - ((((states('input_number.alarm_tue_hour') | int)*60 + (states('input_number.alarm_tue_minutes') | int) - (states('input_number.alarm_tue_offset')) | int)/60)| int))*100) | int)*60/100) | round) ) }}
+group:
+  alarm_tue:
+    name: Alarm dinsdag
+    entities:
+    - input_boolean.alarm_tue_enable
+    - sensor.alarm_tue_time
+    - sensor.alarm_tue_time_minus_offset
+    - input_number.alarm_tue_hour
+    - input_number.alarm_tue_minutes
+    - input_number.alarm_tue_offset
+    
+    
+# The automation for the Alarm clock.
+automation:
+- id: alarm_tue
+  alias: 'Wakker worden op dinsdag.'
+  trigger:
+    - platform: time_pattern
+      minutes: '/1'
+      seconds: 00
+  condition:
+    - condition: template
+      value_template: "{{ states.sensor.time.state == states.sensor.alarm_tue_time_minus_offset.state  }}"
+    - condition: state
+      entity_id: input_boolean.alarm_tue_enable  
+      state: 'on'
+    - condition: time
+      weekday: 
+        - tue
+  action:
+  - service: script.bedroom_wakeup
+    data_template:
+          alarm_offset: "{{states('input_number.alarm_tue_offset')| int }}"
