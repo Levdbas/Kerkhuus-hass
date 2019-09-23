@@ -1,3 +1,4 @@
+ # Wakeup script for the bedroom.
  'bedroom_wakeup':
   alias:  Wakker worden!
   sequence:
@@ -17,17 +18,69 @@
         minutes: "{{ alarm_offset | int }}"
   - data:
       entity_id: media_player.slaapkamer
-      volume_level: '.20'
+      volume_level: '.08'
     service: media_player.volume_set
   - data:
       entity_id: media_player.slaapkamer
-      sleep_time: 1800 #tijd in seconden
+      sleep_time: 1800 # Setting the sleep timer. Time in seconds.
     service: sonos.set_sleep_timer
   - data:
-      entity_id: sonos.slaapkamer
+      entity_id: media_player.slaapkamer
       shuffle: "true"
     service: media_player.shuffle_set
   - data:
       entity_id: media_player.slaapkamer
       source: Discover Weekly
     service: media_player.select_source
+  # Start volume increments. Might be a better way, but hey :D
+  # We build up our volume from .09 to 0.15 by increments of 15 seconds.
+  # Total duration 1 minute 45 seconds to build up.
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.09'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.10'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.11'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.12'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.13'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.14'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.15'
+    service: media_player.volume_set
+  # end volume increase
+
+  # start delay before turning off the lights
+  - delay:
+        minutes: 30
+  - service: light.turn_off
+    entity_id: light.hue_bloom_1
