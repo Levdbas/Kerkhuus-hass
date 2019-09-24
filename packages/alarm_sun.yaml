@@ -1,16 +1,10 @@
+input_datetime:
+  alarm_sun:
+    name: Alarm tijd
+    has_date: false
+    has_time: true
+    
 input_number:
-  alarm_sun_hour:
-    name: Uren
-    icon: mdi:timer
-    min: 0
-    max: 23
-    step: 1
-  alarm_sun_minutes:
-    name: Minuten
-    icon: mdi:timer
-    min: 0
-    max: 59
-    step: 1
   alarm_sun_offset:
     name: Transitie tijd
     icon: mdi:blur-linear
@@ -28,15 +22,13 @@ sensor:
   - platform: template
     sensors:
       alarm_sun_time:
-        friendly_name: 'Alarm tijd'
-        value_template: >-
-          {{ "%0.02d:%0.02d" | format(states("input_number.alarm_sun_hour") | int, states("input_number.alarm_sun_minutes") | int) }}
+        friendly_name: 'Muziek gaat spelen om'
+        value_template: "{{ ((states.input_datetime.alarm_sun.attributes.timestamp) | timestamp_custom('%H:%M', False)) }}"
   - platform: template
     sensors:
       alarm_sun_time_minus_offset:
-        friendly_name: 'Transitie Tijd'
-        value_template: >-
-          {{ '%0.02d:%0.02d' | format( ((((states('input_number.alarm_sun_hour') | int)*60 + (states('input_number.alarm_sun_minutes') | int) - (states('input_number.alarm_sun_offset'))| int)/60)| int),(((((((((states('input_number.alarm_sun_hour') | int)*60 + (states('input_number.alarm_sun_minutes') | int) - (states('input_number.alarm_sun_offset')) | int)/60)) - ((((states('input_number.alarm_sun_hour') | int)*60 + (states('input_number.alarm_sun_minutes') | int) - (states('input_number.alarm_sun_offset')) | int)/60)| int))*100) | int)*60/100) | round) ) }}
+        friendly_name: 'Lamp gaat aan om'
+        value_template: "{{ (states.input_datetime.alarm_sun.attributes.timestamp - ((states('input_number.alarm_sun_offset' ) | int) * 60)) | timestamp_custom('%H:%M', False) }}"
 group:
   alarm_sun:
     name: Alarm zondag
@@ -44,8 +36,7 @@ group:
     - input_boolean.alarm_sun_enable
     - sensor.alarm_sun_time
     - sensor.alarm_sun_time_minus_offset
-    - input_number.alarm_sun_hour
-    - input_number.alarm_sun_minutes
+    - input_datetime.alarm_sun
     - input_number.alarm_sun_offset
     
     
