@@ -2,3 +2,13 @@
   display_options:
       - 'time'
       - 'date'
+- platform: nederlandse_spoorwegen
+  email: !secret ns_username
+  password: !secret ns_password
+  routes:
+    - name: Gouda - Rotterdam
+      from: Gd
+      to: Rtd
+    - name: Gouda - Woerden
+      from: Gd
+      to: Wd
