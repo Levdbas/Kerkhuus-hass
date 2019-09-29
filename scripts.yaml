@@ -33,8 +33,32 @@
       source: Discover Weekly
     service: media_player.select_source
   # Start volume increments. Might be a better way, but hey :D
-  # We build up our volume from .09 to 0.15 by increments of 15 seconds.
+  # We build up our volume from .05 to 0.11 by increments of 15 seconds.
   # Total duration 1 minute 45 seconds to build up.
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.05'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.06'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.07'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.08'
+    service: media_player.volume_set
   - delay:
         seconds: 15
   - data:
@@ -52,30 +76,6 @@
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.11'
-    service: media_player.volume_set
-  - delay:
-        seconds: 15
-  - data:
-      entity_id: media_player.slaapkamer
-      volume_level: '.12'
-    service: media_player.volume_set
-  - delay:
-        seconds: 15
-  - data:
-      entity_id: media_player.slaapkamer
-      volume_level: '.13'
-    service: media_player.volume_set
-  - delay:
-        seconds: 15
-  - data:
-      entity_id: media_player.slaapkamer
-      volume_level: '.14'
-    service: media_player.volume_set
-  - delay:
-        seconds: 15
-  - data:
-      entity_id: media_player.slaapkamer
-      volume_level: '.15'
     service: media_player.volume_set
   # end volume increase
 
