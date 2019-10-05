@@ -49,8 +49,7 @@ unifi:
 # Setup of Pi-hole.
 pi_hole:
   host: localhost:4865
-  
-  
+
 wake_on_lan:
   PC: "30:5a:3a:45:ed:7a"
   name: "PC"
@@ -66,17 +65,10 @@ wake_on_lan:
       addon: core_rpc_shutdown
       input: PC
       
-switch:
-  - platform: wake_on_lan
-    mac_address: "30:5a:3a:45:ed:7a"
-    turn_off:
-      service: hassio.addon_stdin
-      data:
-        addon: core_rpc_shutdown
-        input: PC
 updater:
 system_health:
 sensor: !include sensors.yaml
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
+switch: !include switches.yaml
