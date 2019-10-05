@@ -32,7 +32,7 @@
   condition: []
   action:
   - data:
-      entity_id: switch.living_music
+      entity_id: switch.sonoff_2
     service: homeassistant.turn_on
 - id: '1569138214205'
   alias: Zet stereo uit na 15 minuten pauze
@@ -44,6 +44,55 @@
     to: paused
   condition: []
   action:
+  - device_id: b76e546ab28a4c4e816b0d457ede09b6
+    domain: switch
+    entity_id: switch.sonoff_2
+    type: turn_off
+- alias: Power state on HA start-up
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
+  - service: mqtt.publish
+    data:
+      topic: sonoffs/cmnd/state
+      payload: ''
+  id: fcb40382a204462bbbf5704f118b4728
+- alias: Enable MQTT discovery for all devices
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
   - data:
-      entity_id: switch.living_music
+      entity_id: switch.sonoff_2
     service: homeassistant.turn_off
+  id: c696924d994e4c76bcaddf166469b739
+- id: '1570216531721'
+  alias: Stroom van computer onder 4 Watt
+  trigger:
+  - below: '4'
+    entity_id: sensor.sonoff_energy_power_4
+    for: 00:10:00
+    platform: numeric_state
+  condition: []
+  action:
+  - device_id: bda730f0ad2e43cfbd7d3268d07444d8
+    domain: switch
+    entity_id: switch.sonoff_4
+    type: turn_off
+- id: '1570300078319'
+  alias: Slaapkamer lamp uit om 9 uur
+  trigger:
+  - at: 09:00
+    platform: time
+  - device_id: 51dfe2bfa30c4470b2d504200a27c6e0
+    domain: light
+    entity_id: light.hue_bloom_1
+    platform: device
+    type: turned_on
+  condition: []
+  action:
+  - device_id: 51dfe2bfa30c4470b2d504200a27c6e0
+    domain: light
+    entity_id: light.hue_bloom_1
+    type: turn_off
