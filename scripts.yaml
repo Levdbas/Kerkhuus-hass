@@ -30,11 +30,23 @@
     service: media_player.shuffle_set
   - data:
       entity_id: media_player.slaapkamer
-      source: Discover Weekly
+      source: Rise and shine
     service: media_player.select_source
   # Start volume increments. Might be a better way, but hey :D
-  # We build up our volume from .05 to 0.11 by increments of 15 seconds.
+  # We build up our volume from .03 to .08 by increments of 15 seconds.
   # Total duration 1 minute 45 seconds to build up.
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.03'
+    service: media_player.volume_set
+  - delay:
+        seconds: 15
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.04'
+    service: media_player.volume_set
   - delay:
         seconds: 15
   - data:
@@ -64,18 +76,6 @@
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.09'
-    service: media_player.volume_set
-  - delay:
-        seconds: 15
-  - data:
-      entity_id: media_player.slaapkamer
-      volume_level: '.10'
-    service: media_player.volume_set
-  - delay:
-        seconds: 15
-  - data:
-      entity_id: media_player.slaapkamer
-      volume_level: '.11'
     service: media_player.volume_set
   # end volume increase
 
