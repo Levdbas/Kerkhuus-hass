@@ -85,12 +85,12 @@
   trigger:
   - at: 09:00
     platform: time
-  - device_id: 51dfe2bfa30c4470b2d504200a27c6e0
+  condition:
+  - condition: device
+    device_id: 51dfe2bfa30c4470b2d504200a27c6e0
     domain: light
     entity_id: light.hue_bloom_1
-    platform: device
-    type: turned_on
-  condition: []
+    type: is_on
   action:
   - device_id: 51dfe2bfa30c4470b2d504200a27c6e0
     domain: light
