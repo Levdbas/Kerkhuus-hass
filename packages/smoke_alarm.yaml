@@ -1,0 +1,43 @@
+group:
+  smoke_alarms:
+    name: Smoke alarms
+    entities:
+    - binary_sensor.lumi_sensor_smoke
+    - binary_sensor.lumi_sensor_smoke_2
+    - sensor.lumi_sensor_smoke_battery_level
+    - sensor.lumi_sensor_smoke_2_battery_level
+
+automation:
+- id: smoke_detected
+  alias: Rookalarm
+  description: ''
+  trigger:
+  - device_id: cc9f90b30b7e4b58ae9c2b7c804761a7
+    domain: binary_sensor
+    entity_id: binary_sensor.lumi_sensor_smoke
+    platform: device
+    type: smoke
+  - device_id: 2ea37f0d166144bd98bf0b43d60dc435
+    domain: binary_sensor
+    entity_id: binary_sensor.lumi_sensor_smoke_2
+    platform: device
+    type: smoke
+  condition: []
+  action:
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.80'
+    service: media_player.volume_set
+  - data_template:
+      entity_id: media_player.slaapkamer
+      language: nl
+      message: "Let op, er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2', 'on') %}op de bovenverdieping{% else %}beneden{% endif %}!"
+    service: tts.google_translate_say
+  - service: persistent_notification.create
+    data_template:
+      message: "Er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2', 'on') %}boven{% else %}beneden{% endif %}!"
+      title: "Let op, rook gedeteceerd"
+  - service: notify.notify
+    data_template:
+      message: "Er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2', 'on') %}boven{% else %}beneden{% endif %}!"
+      title: "Let op, rook gedeteceerd"
