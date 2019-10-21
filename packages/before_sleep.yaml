@@ -1,0 +1,66 @@
+input_boolean:
+  before_sleep_enable:
+    name: "Trusten!"
+
+automation:
+- id: before_sleep
+  alias: 'Voor het slapen gaan.'
+  trigger:
+  - entity_id: input_boolean.before_sleep_enable
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - condition: and
+    conditions:
+    - condition: and
+      conditions:
+      - condition: time
+        weekday: 
+        - sun
+        - thu
+        - thu
+      - before: '22:00:00'
+        condition: time
+    - condition: time
+      weekday: 
+      - mon
+      - wed
+      - fri
+      - sat
+  - condition: state
+    entity_id: input_boolean.before_sleep_enable
+    state: 'on'
+  action:
+  - service: light.turn_on
+    data_template:
+      entity_id: light.hue_bloom_1
+      brightness: 1
+      xy_color: [0.581, 0.391]
+  - delay:
+      seconds: 1
+  - service: light.turn_on
+    data_template:
+      entity_id: light.hue_bloom_1
+      brightness: 255
+      transition: 10
+  - data:
+      entity_id: media_player.slaapkamer
+      volume_level: '.08'
+    service: media_player.volume_set
+  - service: media_player.shuffle_set
+    data:
+      entity_id: media_player.slaapkamer
+      shuffle: "true"
+  - service: media_player.select_source
+    data:
+      entity_id: media_player.slaapkamer
+      source: Peaceful Meditation
+  - service: media_player.stop
+    data:
+      entity_id: media_player.slaapkamer
+  - service: light.turn_off
+    data_template:
+      entity_id: light.hue_bloom_1
+      transition: 10
+    
