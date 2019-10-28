@@ -29,3 +29,15 @@
     mode: transit
     transit_mode: train
     language: nl
+    
+- platform: afvalbeheer
+  wastecollector: Cyclus
+  resources:
+    - restafval
+    - pmd
+  postcode: !secret postcode
+  streetnumber: !secret straat_nr
+  upcomingsensor: 1
+  nameprefix: 1
+  builtinicons: 1
+  dutch: 1
