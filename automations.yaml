@@ -31,9 +31,10 @@
     to: playing
   condition: []
   action:
-  - data:
-      entity_id: switch.sonoff_2
-    service: homeassistant.turn_on
+  - device_id: 468c9435951c477c80994bdcde5e2dba
+    domain: switch
+    entity_id: switch.sonoff_switch_music_downstairs
+    type: turn_on
 - id: '1569138214205'
   alias: Zet stereo uit na 15 minuten pauze
   trigger:
@@ -44,9 +45,9 @@
     to: paused
   condition: []
   action:
-  - device_id: b76e546ab28a4c4e816b0d457ede09b6
+  - device_id: 468c9435951c477c80994bdcde5e2dba
     domain: switch
-    entity_id: switch.sonoff_2
+    entity_id: switch.sonoff_switch_music_downstairs
     type: turn_off
 - alias: Power state on HA start-up
   trigger:
@@ -76,9 +77,9 @@
     platform: numeric_state
   condition: []
   action:
-  - device_id: bda730f0ad2e43cfbd7d3268d07444d8
+  - device_id: 8ea80f17309c483ab9674fde31e71ba0
     domain: switch
-    entity_id: switch.sonoff_4
+    entity_id: switch.sonoff_switch_pc
     type: turn_off
 - id: '1570300078319'
   alias: Slaapkamer lamp uit om 9 uur
@@ -87,12 +88,96 @@
     platform: time
   condition:
   - condition: device
-    device_id: 51dfe2bfa30c4470b2d504200a27c6e0
+    device_id: 75de842134354b5581a7d81d3049f423
     domain: light
-    entity_id: light.hue_bloom_1
+    entity_id: light.philips_bloom
     type: is_on
   action:
-  - device_id: 51dfe2bfa30c4470b2d504200a27c6e0
+  - device_id: 75de842134354b5581a7d81d3049f423
     domain: light
-    entity_id: light.hue_bloom_1
+    entity_id: light.philips_bloom
     type: turn_off
+- id: '1571837838932'
+  alias: Blob aan als de deur open gaat en niemand thuis is
+  description: ''
+  trigger:
+  - device_id: 7ee85ef0953c4daf94eea8578e5496dd
+    domain: binary_sensor
+    entity_id: binary_sensor.window_door_sensor_2
+    platform: device
+    type: opened
+  - device_id: d8fa9af57d9c48bc871823c5d852aab3
+    domain: binary_sensor
+    entity_id: binary_sensor.window_door_sensor
+    platform: device
+    type: opened
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: person.erik_van_der_bas
+      state: away
+    - condition: state
+      entity_id: person.marileen
+      state: away
+    - condition: state
+      entity_id: sensor.daylight
+      state: sunset_start
+  action:
+  - device_id: 8bc40eccc1c744219d82319504cea95b
+    domain: light
+    entity_id: light.blob
+    type: turn_on
+  - delay: 00:02:00
+  - device_id: 8bc40eccc1c744219d82319504cea95b
+    domain: light
+    entity_id: light.blob
+    type: turn_off
+- id: '1571839650328'
+  alias: Licht aan in hal
+  description: ''
+  trigger:
+  - device_id: 7ee85ef0953c4daf94eea8578e5496dd
+    domain: binary_sensor
+    entity_id: binary_sensor.window_door_sensor_2
+    platform: device
+    type: opened
+  - device_id: d8fa9af57d9c48bc871823c5d852aab3
+    domain: binary_sensor
+    entity_id: binary_sensor.window_door_sensor
+    platform: device
+    type: opened
+  condition:
+  - condition: device
+    device_id: 70751c54d879498e80584fa9c7f5a663
+    domain: switch
+    entity_id: switch.sonoff_switch_hall
+    type: is_off
+  action:
+  - alias: ''
+    data:
+      entity_id: switch.sonoff_switch_hall
+    service: homeassistant.turn_on
+  - delay: 00:02:00
+  - alias: ''
+    data:
+      entity_id: switch.sonoff_switch_hall
+    service: homeassistant.turn_off
+- id: '1572110838623'
+  alias: Licht werkkamer dimmen na zonsondergang
+  description: ''
+  trigger:
+  - device_id: 2700d554b05e46d0ad27df6357d67e8d
+    domain: light
+    entity_id: light.lamp_werkkamer
+    platform: device
+    type: turned_on
+  condition:
+  - after: sunset
+    condition: sun
+  action:
+  - data:
+      brightness: 100
+      entity_id: light.werkkamer
+      transition: 5
+    service: light.turn_on
