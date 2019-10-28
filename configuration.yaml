@@ -31,7 +31,6 @@ tts:
 #weer 
 weather:
   - platform: buienradar
-
 tuya:
   username: erikvanderbas@live.nl
   password: !secret smart_switch_pw
