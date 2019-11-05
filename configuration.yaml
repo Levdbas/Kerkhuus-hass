@@ -31,11 +31,6 @@ tts:
 #weer 
 weather:
   - platform: buienradar
-tuya:
-  username: erikvanderbas@live.nl
-  password: !secret smart_switch_pw
-  country_code: 31
-  platform: smart_life
 
 # Set up Unifi controller.
 unifi:
@@ -63,9 +58,10 @@ wake_on_lan:
     data:
       addon: core_rpc_shutdown
       input: PC
-      
+
 updater:
 system_health:
+notify: !include notifiers.yaml
 sensor: !include sensors.yaml
 group: !include groups.yaml
 automation: !include automations.yaml
