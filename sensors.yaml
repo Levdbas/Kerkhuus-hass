@@ -41,3 +41,9 @@
   nameprefix: 1
   builtinicons: 1
   dutch: 1
+- platform: min_max
+  name: Gemiddelde temperatuur
+  type: mean
+  entity_ids:
+    - sensor.multi_sensor_2_3
+    - sensor.multi_sensor
