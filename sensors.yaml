@@ -47,3 +47,33 @@
   entity_ids:
     - sensor.multi_sensor_2_3
     - sensor.multi_sensor
+- platform: buienradar
+  monitored_conditions:
+    - symbol
+    - symbol_1d
+    - humidity
+    - temperature
+    - windspeed
+    - pressure
+    - temperature_1d
+    - temperature_2d
+    - temperature_3d
+    - temperature_4d
+    - temperature_5d
+    - mintemp_1d
+    - rainchance_1d
+    - rainchance_2d
+    - sunchance_1d
+    - sunchance_2d
+    - rain_1d
+    - rain_2d
+    - minrain_1d
+    - maxrain_1d
+    - windforce_1d
+    - windforce_2d
+    - windspeed_1d
+    - windspeed_2d
+    - winddirection_1d
+    - winddirection_2d
+    - windazimuth_1d
+    - windazimuth_2d
