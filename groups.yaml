@@ -1,0 +1,7 @@
+watch:
+  name: Watch
+  entities:
+    - light.blob
+    - light.eettafel
+    - light.lamp_werkkamer
+    - light.slaapkamer
