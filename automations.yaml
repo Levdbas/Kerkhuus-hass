@@ -31,10 +31,9 @@
     to: playing
   condition: []
   action:
-  - device_id: 468c9435951c477c80994bdcde5e2dba
-    domain: switch
-    entity_id: switch.sonoff_switch_music_downstairs
-    type: turn_on
+    data:
+      entity_id: switch.sonoff_switch_music_downstairs
+    service: switch.turn_on
 - id: '1569138214205'
   alias: Zet stereo uit na 15 minuten pauze
   trigger:
@@ -45,10 +44,9 @@
     to: paused
   condition: []
   action:
-  - device_id: 468c9435951c477c80994bdcde5e2dba
-    domain: switch
-    entity_id: switch.sonoff_switch_music_downstairs
-    type: turn_off
+  - data:
+      entity_id: switch.sonoff_switch_music_downstairs
+    service: switch.turn_off
 - alias: Power state on HA start-up
   trigger:
     platform: homeassistant
@@ -77,26 +75,22 @@
     platform: numeric_state
   condition: []
   action:
-  - device_id: 8ea80f17309c483ab9674fde31e71ba0
-    domain: switch
-    entity_id: switch.sonoff_switch_pc
-    type: turn_off
+    data:
+      entity_id: switch.sonoff_switch_pc
+    service: switch.turn_off
 - id: '1570300078319'
   alias: Slaapkamer lamp uit om 9 uur
   trigger:
   - at: 09:00
     platform: time
   condition:
-  - condition: device
-    device_id: 75de842134354b5581a7d81d3049f423
-    domain: light
+  - condition: state
     entity_id: light.philips_bloom
-    type: is_on
+    state: 'on'
   action:
-  - device_id: 75de842134354b5581a7d81d3049f423
-    domain: light
-    entity_id: light.philips_bloom
-    type: turn_off
+    data:
+      entity_id: light.philips_bloom
+    service: light.turn_off
 - id: '1571837838932'
   alias: Blob aan als de deur open gaat en niemand thuis is
   description: ''
@@ -112,27 +106,24 @@
     platform: device
     type: opened
   condition:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: person.erik_van_der_bas
-      state: away
-    - condition: state
-      entity_id: person.marileen
-      state: away
-    - condition: state
-      entity_id: sensor.daylight
-      state: sunset_start
+  - after: sunset
+    condition: sun
+  - condition: template
+    value_template: "{{ is_state('person.erik_van_der_bas', 'away') or\n         as_timestamp(now())\
+      \ - as_timestamp(states.person.erik_van_der_bas.last_changed)\n         < 5*60\
+      \ }}"
+  - condition: template
+    value_template: "{{ is_state('person.marileen', 'away') or\n         as_timestamp(now())\
+      \ - as_timestamp(states.person.marileen.last_changed)\n         < 5*60 }}"
   action:
   - device_id: 8bc40eccc1c744219d82319504cea95b
     domain: light
     entity_id: light.blob
     type: turn_on
-  - delay: 00:02:00
-  - device_id: 8bc40eccc1c744219d82319504cea95b
+  - device_id: 409569def8bd48d8918c5f6ba62a7b06
     domain: light
-    entity_id: light.blob
-    type: turn_off
+    entity_id: light.eettafel
+    type: turn_on
 - id: '1571839650328'
   alias: Licht aan in hal
   description: ''
