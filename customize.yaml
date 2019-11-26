@@ -1,0 +1,12 @@
+binary_sensor.window_door_sensor:
+  device_class: door
+binary_sensor.window_door_sensor_2:
+  device_class: door
+binary_sensor.window_door_sensor_3:
+  device_class: door
+  
+binary_sensor.lumi_sensor_smoke:
+  device_class: smoke
+
+binary_sensor.lumi_sensor_smoke_2:
+  device_class: smoke
