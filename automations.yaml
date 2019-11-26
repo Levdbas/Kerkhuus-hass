@@ -172,3 +172,19 @@
       entity_id: light.werkkamer
       transition: 5
     service: light.turn_on
+- id: '1573073003121'
+  alias: badkamer switch
+  description: ''
+  trigger:
+  - entity_id: light.badkamerlamp
+    platform: state
+    to: 'on'
+  condition:
+  - after: '21:00:00'
+    before: 08:00:00
+    condition: time
+  action:
+  - data:
+      brightness: 120
+      entity_id: light.badkamerlamp
+    service: light.turn_on
