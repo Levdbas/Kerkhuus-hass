@@ -11,7 +11,7 @@ automation:
     platform: state
     to: 'on'
   condition:
-  - condition: and
+  - condition: or
     conditions:
     - condition: and
       conditions:
@@ -28,39 +28,6 @@ automation:
       - wed
       - fri
       - sat
-  - condition: state
-    entity_id: input_boolean.before_sleep_enable
-    state: 'on'
   action:
-  - service: light.turn_on
-    data_template:
-      entity_id: light.hue_bloom_1
-      brightness: 1
-      xy_color: [0.581, 0.391]
-  - delay:
-      seconds: 1
-  - service: light.turn_on
-    data_template:
-      entity_id: light.hue_bloom_1
-      brightness: 255
-      transition: 10
-  - data:
-      entity_id: media_player.slaapkamer
-      volume_level: '.08'
-    service: media_player.volume_set
-  - service: media_player.shuffle_set
-    data:
-      entity_id: media_player.slaapkamer
-      shuffle: "true"
-  - service: media_player.select_source
-    data:
-      entity_id: media_player.slaapkamer
-      source: Peaceful Meditation
-  - service: media_player.stop
-    data:
-      entity_id: media_player.slaapkamer
-  - service: light.turn_off
-    data_template:
-      entity_id: light.hue_bloom_1
-      transition: 10
-    
+    service: scene.turn_on
+    entity_id:  scene.slaapkamer_voor_het_slapen_gaan
