@@ -188,3 +188,33 @@
       brightness: 120
       entity_id: light.badkamerlamp
     service: light.turn_on
+- id: '1574879017101'
+  alias: Blob aan bij beweging in de nacht
+  description: ''
+  trigger:
+  - device_id: 9a67f97880b7410aa775a8fe0664e47e
+    domain: binary_sensor
+    entity_id: binary_sensor.presence_15
+    platform: device
+    type: motion
+  condition:
+  - after: '19:00:00'
+    before: 06:10:00
+    condition: time
+  - condition: state
+    entity_id: light.eettafel
+    state: 'off'
+  - condition: state
+    entity_id: light.blob
+    state: 'off'
+  action:
+  - alias: ''
+    data:
+      brightness: 44
+      color_temp: 432
+      entity_id: light.blob
+    service: light.turn_on
+  - delay: 00:04:00
+  - data:
+      entity_id: light.blob
+    service: light.turn_off
