@@ -124,6 +124,10 @@
     domain: light
     entity_id: light.eettafel
     type: turn_on
+  - device_id: 8a3ee3f970b8462b99e6fe901ed528d1
+    domain: switch
+    entity_id: switch.sonoff_switch_backup
+    type: turn_on
 - id: '1571839650328'
   alias: Licht aan in hal
   description: ''
@@ -214,7 +218,16 @@
       color_temp: 432
       entity_id: light.blob
     service: light.turn_on
+  - alias: ''
+    data:
+      brightness: 44
+      color_temp: 432
+      entity_id: switch.sonoff_switch_backup
+    service: switch.turn_on
   - delay: 00:04:00
   - data:
       entity_id: light.blob
     service: light.turn_off
+  - data:
+      entity_id: switch.sonoff_switch_backup
+    service: switch.turn_off
