@@ -88,12 +88,12 @@
     entity_id: light.philips_bloom
     state: 'on'
   action:
-    data:
+  - data:
       entity_id: light.philips_bloom
     service: light.turn_off
 - id: '1571837838932'
   alias: Blob aan als de deur open gaat en niemand thuis is
-  description: ''
+  description: Alleen na zonsondergang
   trigger:
   - device_id: 7ee85ef0953c4daf94eea8578e5496dd
     domain: binary_sensor
@@ -116,18 +116,15 @@
     value_template: "{{ is_state('person.marileen', 'away') or\n         as_timestamp(now())\
       \ - as_timestamp(states.person.marileen.last_changed)\n         < 5*60 }}"
   action:
-  - device_id: 8bc40eccc1c744219d82319504cea95b
-    domain: light
-    entity_id: light.blob
-    type: turn_on
-  - device_id: 409569def8bd48d8918c5f6ba62a7b06
-    domain: light
-    entity_id: light.eettafel
-    type: turn_on
-  - device_id: 8a3ee3f970b8462b99e6fe901ed528d1
-    domain: switch
-    entity_id: switch.sonoff_switch_backup
-    type: turn_on
+  - data:
+      entity_id: light.blob
+    service: light.turn_on
+  - data:
+      entity_id: light.eettafel
+    service: light.turn_on
+  - data:
+      entity_id: switch.sonoff_switch_backup
+    service: switch.turn_on
 - id: '1571839650328'
   alias: Licht aan in hal
   description: ''
@@ -142,22 +139,15 @@
     entity_id: binary_sensor.window_door_sensor
     platform: device
     type: opened
-  condition:
-  - condition: device
-    device_id: 70751c54d879498e80584fa9c7f5a663
-    domain: switch
-    entity_id: switch.sonoff_switch_hall
-    type: is_off
+  condition: []
   action:
-  - alias: ''
-    data:
+  - data:
       entity_id: switch.sonoff_switch_hall
-    service: homeassistant.turn_on
+    service: switch.turn_on
   - delay: 00:02:00
-  - alias: ''
-    data:
+  - data:
       entity_id: switch.sonoff_switch_hall
-    service: homeassistant.turn_off
+    service: switch.turn_off
 - id: '1572110838623'
   alias: Licht werkkamer dimmen na zonsondergang
   description: ''
@@ -177,8 +167,8 @@
       transition: 5
     service: light.turn_on
 - id: '1573073003121'
-  alias: badkamer switch
-  description: ''
+  alias: badkamer dimmen
+  description: Badkamer licht dimmen na 9 uur
   trigger:
   - entity_id: light.badkamerlamp
     platform: state
@@ -212,16 +202,12 @@
     entity_id: light.blob
     state: 'off'
   action:
-  - alias: ''
-    data:
+  - data:
       brightness: 44
       color_temp: 432
       entity_id: light.blob
     service: light.turn_on
-  - alias: ''
-    data:
-      brightness: 44
-      color_temp: 432
+  - data:
       entity_id: switch.sonoff_switch_backup
     service: switch.turn_on
   - delay: 00:04:00
