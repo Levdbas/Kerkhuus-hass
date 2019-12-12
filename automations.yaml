@@ -139,14 +139,17 @@
     entity_id: binary_sensor.window_door_sensor
     platform: device
     type: opened
-  condition: []
+  condition:
+  - condition: state
+    entity_id: switch.sonoff_switch_hall
+    state: 'off'
   action:
-  - data:
-      entity_id: switch.sonoff_switch_hall
+  - data: {}
+    entity_id: switch.sonoff_switch_hall
     service: switch.turn_on
   - delay: 00:02:00
-  - data:
-      entity_id: switch.sonoff_switch_hall
+  - data: {}
+    entity_id: switch.sonoff_switch_hall
     service: switch.turn_off
 - id: '1572110838623'
   alias: Licht werkkamer dimmen na zonsondergang
