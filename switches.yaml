@@ -1,5 +1,5 @@
 - platform: wake_on_lan
-  mac_address: "30:5a:3a:45:ed:7a"
+  mac: "30:5a:3a:45:ed:7a"
   turn_off:
      service: hassio.addon_stdin
      data:
