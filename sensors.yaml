@@ -2,16 +2,16 @@
   display_options:
       - 'time'
       - 'date'
-- platform: nederlandse_spoorwegen
-  email: !secret ns_username
-  password: !secret ns_password
-  routes:
-    - name: Gouda - Rotterdam
-      from: Gd
-      to: Rtd
-    - name: Gouda - Woerden
-      from: Gd
-      to: Wd
+#- platform: nederlandse_spoorwegen
+#  email: !secret ns_username
+#  password: !secret ns_password
+#  routes:
+#    - name: Gouda - Rotterdam
+#      from: Gd
+#      to: Rtd
+#    - name: Gouda - Woerden
+#      from: Gd
+#      to: Wd
 - platform: systemmonitor
   resources:
   - type: processor_use
@@ -77,3 +77,4 @@
     - winddirection_2d
     - windazimuth_1d
     - windazimuth_2d
+- platform: dsmr_reader
