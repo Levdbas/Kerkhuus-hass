@@ -44,6 +44,7 @@ group:
 automation:
 - id: alarm_fri
   alias: 'Wakker worden op vrijdag.'
+  hide_entity: true
   trigger:
     - platform: time_pattern
       minutes: '/1'

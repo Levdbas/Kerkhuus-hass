@@ -8,7 +8,6 @@ input_number:
   alarm_sat_offset:
     name: Transitie tijd
     icon: mdi:blur-linear
-    initial: 10
     min: 0
     max: 60
     step: 5
@@ -44,6 +43,7 @@ group:
 automation:
 - id: alarm_sat
   alias: 'Wakker worden op zaterdag.'
+  hide_entity: true
   trigger:
     - platform: time_pattern
       minutes: '/1'
