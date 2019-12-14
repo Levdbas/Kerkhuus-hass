@@ -10,3 +10,32 @@ binary_sensor.lumi_sensor_smoke:
 
 binary_sensor.lumi_sensor_smoke_2:
   device_class: smoke
+sensor.alarm_mon_time:
+  icon: mdi:music
+sensor.alarm_tue_time:
+  icon: mdi:music
+sensor.alarm_wed_time:
+  icon: mdi:music
+sensor.alarm_thu_time:
+  icon: mdi:music
+sensor.alarm_fri_time:
+  icon: mdi:music
+sensor.alarm_sat_time:
+  icon: mdi:music
+sensor.alarm_sun_time:
+  icon: mdi:music
+
+sensor.alarm_mon_time_minus_offset:
+  icon: mdi:lightbulb-on
+sensor.alarm_tue_time_minus_offset:
+  icon: mdi:lightbulb-on
+sensor.alarm_wed_time_minus_offset:
+  icon: mdi:lightbulb-on
+sensor.alarm_thu_time_minus_offset:
+  icon: mdi:lightbulb-on
+sensor.alarm_fri_time_minus_offset:
+  icon: mdi:lightbulb-on
+sensor.alarm_sat_time_minus_offset:
+  icon: mdi:lightbulb-on
+sensor.alarm_sun_time_minus_offset:
+  icon: mdi:lightbulb-on
