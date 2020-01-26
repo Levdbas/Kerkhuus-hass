@@ -57,26 +57,19 @@
       topic: sonoffs/cmnd/state
       payload: ''
   id: fcb40382a204462bbbf5704f118b4728
-- alias: Enable MQTT discovery for all devices
-  trigger:
-    platform: homeassistant
-    event: start
-  action:
-  - data:
-      entity_id: switch.sonoff_2
-    service: homeassistant.turn_off
-  id: c696924d994e4c76bcaddf166469b739
 - id: '1570216531721'
   alias: Stroom van computer onder 4 Watt
   trigger:
   - below: '4'
-    entity_id: sensor.sonoff_energy_power_4
+    entity_id: sensor.sonoff_switch_desk_energy_power
     for: 00:10:00
     platform: numeric_state
   condition: []
   action:
-    data:
-      entity_id: switch.sonoff_switch_pc
+  - data: {}
+    entity_id: switch.sonoff_switch_desk
+    service: switch.turn_off
+  - entity_id: switch.sonoff_switch_music_upstairs
     service: switch.turn_off
 - id: '1570300078319'
   alias: Slaapkamer lamp uit om 9 uur
@@ -95,14 +88,13 @@
   alias: Blob aan als de deur open gaat en niemand thuis is
   description: Alleen na zonsondergang
   trigger:
-  - device_id: 7ee85ef0953c4daf94eea8578e5496dd
+  - entity_id: binary_sensor.deur_woonkamer
+    from: 'off'
+    platform: state
+    to: 'on'
+  - device_id: a3a9cefdb7064c45bb6f53d668f2f3c3
     domain: binary_sensor
-    entity_id: binary_sensor.window_door_sensor_2
-    platform: device
-    type: opened
-  - device_id: d8fa9af57d9c48bc871823c5d852aab3
-    domain: binary_sensor
-    entity_id: binary_sensor.window_door_sensor
+    entity_id: binary_sensor.deur_woonkamer
     platform: device
     type: opened
   condition:
@@ -116,29 +108,22 @@
     value_template: "{{ is_state('person.marileen', 'away') or\n         as_timestamp(now())\
       \ - as_timestamp(states.person.marileen.last_changed)\n         < 5*60 }}"
   action:
-  - data:
-      entity_id: light.blob
+  - entity_id: light.blob
     service: light.turn_on
-  - data:
-      entity_id: light.eettafel
+  - entity_id: light.eettafel
     service: light.turn_on
-  - data:
-      entity_id: switch.sonoff_switch_backup
-    service: switch.turn_on
 - id: '1571839650328'
   alias: Licht aan in hal
   description: ''
   trigger:
-  - device_id: 7ee85ef0953c4daf94eea8578e5496dd
-    domain: binary_sensor
-    entity_id: binary_sensor.window_door_sensor_2
-    platform: device
-    type: opened
-  - device_id: d8fa9af57d9c48bc871823c5d852aab3
-    domain: binary_sensor
-    entity_id: binary_sensor.window_door_sensor
-    platform: device
-    type: opened
+  - entity_id: binary_sensor.deur_woonkamer
+    from: 'off'
+    platform: state
+    to: 'on'
+  - entity_id: binary_sensor.deur_hal
+    from: 'off'
+    platform: state
+    to: 'on'
   condition:
   - condition: state
     entity_id: switch.sonoff_switch_hall
@@ -189,9 +174,9 @@
   alias: Blob aan bij beweging in de nacht
   description: ''
   trigger:
-  - device_id: 9a67f97880b7410aa775a8fe0664e47e
+  - device_id: cbc2282c4b3c4508a89dd3de0d0f7e9a
     domain: binary_sensor
-    entity_id: binary_sensor.presence_15
+    entity_id: binary_sensor.motion_livingroom
     platform: device
     type: motion
   condition:
@@ -220,3 +205,14 @@
   - data:
       entity_id: switch.sonoff_switch_backup
     service: switch.turn_off
+- id: 'tasmota_auto_discovery'
+  alias: "Sync Tasmota states on start-up - autodiscovery"
+  initial_state: true
+  trigger:
+    platform: homeassistant
+    event: start
+  action:
+    - service: mqtt.publish
+      data:
+        topic: "tasmotas/cmnd/state"
+        payload: ""
