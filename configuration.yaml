@@ -41,9 +41,6 @@ unifi:
       ssid_filter:
         - !secret unifi_ssid
  
-# Setup of Pi-hole.
-pi_hole:
-  host: localhost:4865
 
 wake_on_lan:
   PC: "30:5a:3a:45:ed:7a"
@@ -60,6 +57,16 @@ wake_on_lan:
       addon: core_rpc_shutdown
       input: PC
 
+camera:
+  - platform: ffmpeg
+    name: DaFang3_1
+    input: -rtsp_transport tcp -i rtsp://192.168.3.11:8554/unicast
+    
+sonos:
+  media_player:
+    hosts:
+      - 192.168.10.8
+      
 updater:
 system_health:
 notify: !include notifiers.yaml
