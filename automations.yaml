@@ -47,16 +47,6 @@
   - data:
       entity_id: switch.sonoff_switch_music_downstairs
     service: switch.turn_off
-- alias: Power state on HA start-up
-  trigger:
-    platform: homeassistant
-    event: start
-  action:
-  - service: mqtt.publish
-    data:
-      topic: sonoffs/cmnd/state
-      payload: ''
-  id: fcb40382a204462bbbf5704f118b4728
 - id: '1570216531721'
   alias: Stroom van computer onder 4 Watt
   trigger:
@@ -92,11 +82,10 @@
     from: 'off'
     platform: state
     to: 'on'
-  - device_id: a3a9cefdb7064c45bb6f53d668f2f3c3
-    domain: binary_sensor
-    entity_id: binary_sensor.deur_woonkamer
-    platform: device
-    type: opened
+  - entity_id: binary_sensor.deur_hal
+    from: 'off'
+    platform: state
+    to: 'on'
   condition:
   - after: sunset
     condition: sun
@@ -174,15 +163,14 @@
   alias: Blob aan bij beweging in de nacht
   description: ''
   trigger:
-  - device_id: cbc2282c4b3c4508a89dd3de0d0f7e9a
-    domain: binary_sensor
-    entity_id: binary_sensor.motion_livingroom
-    platform: device
-    type: motion
+  - entity_id: binary_sensor.motion_livingroom
+    from: 'off'
+    platform: state
+    to: 'on'
   condition:
-  - after: '19:00:00'
-    before: 06:10:00
-    condition: time
+  - condition: state
+    entity_id: sun.sun
+    state: under_horizon
   - condition: state
     entity_id: light.eettafel
     state: 'off'
@@ -205,14 +193,25 @@
   - data:
       entity_id: switch.sonoff_switch_backup
     service: switch.turn_off
-- id: 'tasmota_auto_discovery'
-  alias: "Sync Tasmota states on start-up - autodiscovery"
+- id: tasmota_auto_discovery
+  alias: Sync Tasmota states on start-up - autodiscovery
   initial_state: true
   trigger:
     platform: homeassistant
     event: start
   action:
-    - service: mqtt.publish
-      data:
-        topic: "tasmotas/cmnd/state"
-        payload: ""
+  - service: mqtt.publish
+    data:
+      topic: tasmotas/cmnd/state
+      payload: ''
+- id: '1585034107862'
+  alias: muziek boven uit om 22:00
+  description: ''
+  trigger:
+  - at: '22:00'
+    platform: time
+  condition: []
+  action:
+  - data: {}
+    entity_id: switch.sonoff_switch_music_upstairs
+    service: switch.turn_off

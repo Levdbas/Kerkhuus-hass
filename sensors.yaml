@@ -2,12 +2,12 @@
   display_options:
       - 'time'
       - 'date'
-#- platform: nederlandse_spoorwegen
-#  api_key: !secret ns_password
-#  routes:
-#    - name: Gouda - Rotterdam
-#      from: Gd
-#      to: Rtd
+- platform: nederlandse_spoorwegen
+  api_key: !secret ns_password
+  routes:
+    - name: Gouda - Rotterdam
+      from: Gd
+      to: Rtd
 - platform: systemmonitor
   resources:
   - type: processor_use
