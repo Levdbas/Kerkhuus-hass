@@ -43,7 +43,6 @@ group:
 automation:
 - id: alarm_wed
   alias: 'Wakker worden op woensdag.'
-  hide_entity: true
   trigger:
     - platform: time_pattern
       minutes: '/1'
