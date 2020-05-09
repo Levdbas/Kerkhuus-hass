@@ -215,3 +215,17 @@
   - data: {}
     entity_id: switch.sonoff_switch_music_upstairs
     service: switch.turn_off
+- id: '1589008788991'
+  alias: Notify everyone when washingmachine is ready
+  description: ''
+  trigger:
+  - entity_id: sensor.washer_samsung_washer_machine_state
+    from: run
+    platform: state
+    to: stop
+  condition: []
+  action:
+    - service: notify.notify
+      data_template:
+        message: De wasmachine is klaar sinds {{ now().strftime('%H:%M') }}
+        title: Wasmachine klaar.
