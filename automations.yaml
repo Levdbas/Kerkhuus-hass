@@ -170,7 +170,7 @@
   condition:
   - condition: state
     entity_id: sun.sun
-    state: under_horizon
+    state: below_horizon
   - condition: state
     entity_id: light.eettafel
     state: 'off'
