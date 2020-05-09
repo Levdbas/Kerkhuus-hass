@@ -15,6 +15,8 @@ default_config:
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
     base_url: !secret duckdns
+    ip_ban_enabled: true
+    login_attempts_threshold: 5
     ssl_certificate: /ssl/fullchain.pem
     ssl_key: /ssl/privkey.pem
 
@@ -33,14 +35,6 @@ tts:
 weather:
   - platform: buienradar
 
-# Set up Unifi controller.
-unifi:
-  controllers:
-    - host: unifi
-      site: !secret unifi_site
-      ssid_filter:
-        - !secret unifi_ssid
- 
 
 wake_on_lan:
   PC: "30:5a:3a:45:ed:7a"
