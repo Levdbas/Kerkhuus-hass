@@ -213,7 +213,7 @@
   condition: []
   action:
   - data: {}
-    entity_id: switch.sonoff_switch_music_upstairs
+    entity_id: switch.switch_music_upstairs
     service: switch.turn_off
 - id: '1589008788991'
   alias: Notify everyone when washingmachine is ready
