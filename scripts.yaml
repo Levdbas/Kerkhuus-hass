@@ -1,89 +1,89 @@
- # Wakeup script for the bedroom.
- 'bedroom_wakeup':
-  alias:  Wakker worden!
+bedroom_wakeup:
+  alias: Wakker worden!
   sequence:
-  - service: light.turn_on
-    data:
-      entity_id: light.philips_bloom
+  - data:
       brightness: 1
-      rgb_color: [241, 255, 217]
+      entity_id: light.philips_bloom
+      rgb_color:
+      - 241
+      - 255
+      - 217
+    service: light.turn_on
   - delay:
       seconds: 1
-  - service: light.turn_on
-    data:
-      entity_id: light.philips_bloom
+  - data:
       brightness: 1
-      rgb_color: [241, 255, 217]
-  - service: light.turn_on
-    data_template:
       entity_id: light.philips_bloom
+      rgb_color:
+      - 241
+      - 255
+      - 217
+    service: light.turn_on
+  - data_template:
       brightness: 255
-      transition: "{{ alarm_offset | multiply(60) }}"
+      entity_id: light.philips_bloom
+      transition: '{{ alarm_offset | multiply(60) }}'
+    service: light.turn_on
   - delay:
-        minutes: "{{ alarm_offset | int }}"
+      minutes: '{{ alarm_offset | int }}'
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.02'
     service: media_player.volume_set
   - data:
       entity_id: media_player.slaapkamer
-      sleep_time: 1800 # Setting the sleep timer. Time in seconds.
+      sleep_time: 1800
     service: sonos.set_sleep_timer
-  - service: media_player.shuffle_set
-    data:
-      entity_id: media_player.slaapkamer
-      shuffle: true
   - data:
       entity_id: media_player.slaapkamer
-      source: Rise and shine
+      shuffle: true
+    service: media_player.shuffle_set
+  - data:
+      entity_id: media_player.slaapkamer
+      source: Rise and shine vol.2
     service: media_player.select_source
-  # Start volume increments. Might be a better way, but hey :D
-  # We build up our volume from .03 to .08 by increments of 15 seconds.
-  # Total duration 1 minute 45 seconds to build up.
   - delay:
-        seconds: 15
+      seconds: 15
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.03'
     service: media_player.volume_set
   - delay:
-        seconds: 15
+      seconds: 15
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.04'
     service: media_player.volume_set
   - delay:
-        seconds: 15
+      seconds: 15
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.05'
     service: media_player.volume_set
   - delay:
-        seconds: 15
+      seconds: 15
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.06'
     service: media_player.volume_set
   - delay:
-        seconds: 15
+      seconds: 15
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.07'
     service: media_player.volume_set
   - delay:
-        seconds: 15
+      seconds: 15
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.08'
     service: media_player.volume_set
   - delay:
-        seconds: 15
+      seconds: 15
   - data:
       entity_id: media_player.slaapkamer
       volume_level: '.09'
     service: media_player.volume_set
-  # end volume increase
-
   # start delay before turning off the lights
   - delay:
         minutes: 30
