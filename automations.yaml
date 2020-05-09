@@ -31,8 +31,8 @@
     to: playing
   condition: []
   action:
-    data:
-      entity_id: switch.sonoff_switch_music_downstairs
+  - data:
+      entity_id: switch.switch_music_downstairs
     service: switch.turn_on
 - id: '1569138214205'
   alias: Zet stereo uit na 15 minuten pauze
@@ -45,7 +45,7 @@
   condition: []
   action:
   - data:
-      entity_id: switch.sonoff_switch_music_downstairs
+      entity_id: switch.switch_music_downstairs
     service: switch.turn_off
 - id: '1570216531721'
   alias: Stroom van computer onder 4 Watt
