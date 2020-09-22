@@ -38,6 +38,9 @@ automation:
       message: "Er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2', 'on') %}boven{% else %}beneden{% endif %}!"
       title: "Let op, rook gedeteceerd"
   - service: notify.notify
-    data_template:
-      message: "Er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2', 'on') %}boven{% else %}beneden{% endif %}!"
+    data:
       title: "Let op, rook gedeteceerd"
+      message: "Er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2', 'on') %}boven{% else %}beneden{% endif %}!"
+      data:
+        ttl: 0
+        priority: high
