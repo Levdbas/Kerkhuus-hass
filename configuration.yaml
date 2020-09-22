@@ -35,6 +35,10 @@ tts:
 weather:
   - platform: buienradar
 
+#google calendar
+google:
+  client_id: !secret google_calendar_id
+  client_secret: !secret google_calendar_secret
 
 wake_on_lan:
   PC: "30:5a:3a:45:ed:7a"
