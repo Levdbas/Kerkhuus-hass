@@ -40,7 +40,7 @@ bedroom_wakeup:
     service: media_player.shuffle_set
   - data:
       entity_id: media_player.slaapkamer
-      source: Waking up with u
+      source: Rise and shine vol.3
     service: media_player.select_source
   - delay:
       seconds: 15
