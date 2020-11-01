@@ -30,10 +30,10 @@ bedroom_wakeup:
       entity_id: media_player.slaapkamer
       volume_level: '.02'
     service: media_player.volume_set
-  - data:
-      entity_id: media_player.slaapkamer
-      sleep_time: 1800
-    service: sonos.set_sleep_timer
+  #- data:
+  #   entity_id: media_player.slaapkamer
+  #    sleep_time: 1600
+  #  service: sonos.set_sleep_timer
   - data:
       entity_id: media_player.slaapkamer
       shuffle: true
@@ -84,8 +84,29 @@ bedroom_wakeup:
       entity_id: media_player.slaapkamer
       volume_level: '.09'
     service: media_player.volume_set
-  # start delay before turning off the lights
+  # 1:45: speaker boven op juiste volume
   - delay:
-        minutes: 30
+      minutes: 3
+  # 4:45 na starten muziek: woonkamer set volume & join group.
+  - data:
+      entity_id: media_player.woonkamer
+      volume_level: '.10'
+    service: media_player.volume_set
+  - data:
+      master: media_player.slaapkamer
+      entity_id: media_player.woonkamer
+    service: sonos.join
+  - delay:
+      minutes: 25
+  # 29:45 na starten muziek: unjoin slaapkamer en zet het licht uit.
+  - service: sonos.unjoin
+    data:
+      entity_id: media_player.slaapkamer
   - service: light.turn_off
     entity_id: light.philips_bloom
+  - delay:
+      minutes: 10
+  # 39:45 na starten muziek: stop woonkamer.
+  - service: media_player.media_stop
+    data:
+        entity_id: media_player.woonkamer
