@@ -39,8 +39,8 @@ automation:
       title: "Let op, rook gedeteceerd"
   - service: notify.notify
     data:
-      title: "Let op, rook gedeteceerd"
-      message: "Er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2', 'on') %}boven{% else %}beneden{% endif %}!"
-      data:
-        ttl: 0
-        priority: high
+      ttl: 0
+      priority: high
+      channel: Alarm # For devices on Android 8.0+ only
+      importance: high
+      timeout: 20000000
