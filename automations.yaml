@@ -92,11 +92,9 @@
     to: 'on'
   condition:
   - condition: template
-    value_template: '{{ is_state(''person.erik_van_der_bas'', ''away'') or as_timestamp(now())
-      - as_timestamp(states.person.erik_van_der_bas.last_changed) < 5*60 }}'
+    value_template: "{{ is_state('person.erik_van_der_bas', 'away') or as_timestamp(now()) - as_timestamp(states.person.erik_van_der_bas.last_changed) < 5*60 }}"
   - condition: template
-    value_template: '{{ is_state(''person.marileen'', ''away'') or as_timestamp(now())
-      - as_timestamp(states.person.marileen.last_changed) < 5*60 }}'
+    value_template: "{{ is_state('person.marileen', 'away') or as_timestamp(now()) - as_timestamp(states.person.marileen.last_changed) < 15*60 }}"
   action:
   - entity_id: light.blob
     service: light.turn_on
@@ -127,24 +125,6 @@
   - data: {}
     entity_id: switch.sonoff_switch_hall
     service: switch.turn_off
-- id: '1572110838623'
-  alias: Licht werkkamer dimmen na zonsondergang
-  description: ''
-  trigger:
-  - device_id: 2700d554b05e46d0ad27df6357d67e8d
-    domain: light
-    entity_id: light.lamp_werkkamer
-    platform: device
-    type: turned_on
-  condition:
-  - after: sunset
-    condition: sun
-  action:
-  - data:
-      brightness: 100
-      entity_id: light.werkkamer
-      transition: 5
-    service: light.turn_on
 - id: '1573073003121'
   alias: badkamer dimmen
   description: Badkamer licht dimmen na 9 uur
@@ -159,8 +139,9 @@
   action:
   - data:
       brightness: 120
-      entity_id: light.badkamerlamp
     service: light.turn_on
+    entity_id: light.badkamerlamp
+  mode: single
 - id: '1574879017101'
   alias: Blob aan bij beweging in de nacht
   description: ''
@@ -240,9 +221,12 @@
     event_data:
       id: dimmer_switch_boven
       event: 1002
-  condition: []
+  condition:
+  - condition: state
+    entity_id: light.philips_bloom
+    state: 'off'
   action:
-  - service: light.toggle
+  - service: light.turn_on
     data:
       brightness: 250
       rgb_color:
@@ -252,12 +236,70 @@
     entity_id: light.philips_bloom
   - condition: sun
     after: sunset
-  - service: light.toggle
+  - service: light.turn_on
     data:
       brightness: 130
       rgb_color:
       - 255
-      - 0
-      - 0
+      - 129
+      - 1
     entity_id: light.philips_bloom
+  mode: single
+- id: '1600802848971'
+  alias: Slaapkamerlamp rood in de avond
+  description: Licht op rood als de zon onder is. (handmatig via interface)
+  trigger:
+  - platform: state
+    entity_id: light.philips_bloom
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: sun
+    after: sunset
+  action:
+  - service: light.turn_on
+    data:
+      brightness: 130
+      rgb_color:
+      - 255
+      - 129
+      - 1
+    entity_id: light.philips_bloom
+  mode: single
+- id: '1600803430151'
+  alias: Slaapkamerlamp uit via knop op afstandbediening
+  description: Licht op rood als de zon onder is.
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      id: dimmer_switch_boven
+      event: 1002
+  condition:
+  - condition: state
+    entity_id: light.philips_bloom
+    state: 'on'
+  action:
+  - service: light.turn_off
+    data: {}
+    entity_id: light.philips_bloom
+  mode: single
+- id: '1600803605636'
+  alias: 'kantoor dimmen '
+  description: kantoor licht dimmen na 9 uur
+  trigger:
+  - entity_id: light.licht_werkkamer
+    platform: state
+    to: 'on'
+  condition:
+  - after: '21:00:00'
+    before: 08:00:00
+    condition: time
+  action:
+  - data:
+      brightness: "{%- if now().strftime('%H')| int >= 21 %}\n  100\n{%- elif now().strftime('%H')|\
+        \ int < 7 %}\n  100\n{%- elif now().strftime('%H')| int >= 7 %}\n  255\n{%-\
+        \ endif %}\n"
+    service: light.turn_on
+    entity_id: light.licht_werkkamer
   mode: single
