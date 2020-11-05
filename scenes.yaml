@@ -1,11 +1,11 @@
 - name: Slaapkamer - Voor het slapen gaan
   entities:
-    light.philips_bloom:
-      state: on
+    light.slaapkamer:
+      state: 'on'
       brightness: 255
       xy_color: [0.581, 0.391]
     media_player.slaapkamer:
-      state: on
+      state: 'on'
       volume_level: '.08'
       shuffle: "true"
       source: Peaceful Meditation
