@@ -92,9 +92,11 @@
     to: 'on'
   condition:
   - condition: template
-    value_template: "{{ is_state('person.erik_van_der_bas', 'away') or as_timestamp(now()) - as_timestamp(states.person.erik_van_der_bas.last_changed) < 5*60 }}"
+    value_template: "{{ is_state('person.erik_van_der_bas', ''away'') or as_timestamp(now())
+      - as_timestamp(states.person.erik_van_der_bas.last_changed) < 5*60 }}"
   - condition: template
-    value_template: "{{ is_state('person.marileen', 'away') or as_timestamp(now()) - as_timestamp(states.person.marileen.last_changed) < 15*60 }}"
+    value_template: "{{ is_state('person.marileen', 'away') or as_timestamp(now())
+      - as_timestamp(states.person.marileen.last_changed) < 15*60 }}"
   action:
   - entity_id: light.blob
     service: light.turn_on
@@ -223,7 +225,7 @@
       event: 1002
   condition:
   - condition: state
-    entity_id: light.philips_bloom
+    entity_id: light.slaapkamer
     state: 'off'
   action:
   - service: light.turn_on
@@ -233,7 +235,7 @@
       - 255
       - 255
       - 255
-    entity_id: light.philips_bloom
+    entity_id: light.slaapkamer
   - condition: sun
     after: sunset
   - service: light.turn_on
@@ -243,7 +245,7 @@
       - 255
       - 129
       - 1
-    entity_id: light.philips_bloom
+    entity_id: light.slaapkamer
   mode: single
 - id: '1600802848971'
   alias: Slaapkamerlamp rood in de avond
@@ -264,7 +266,7 @@
       - 255
       - 129
       - 1
-    entity_id: light.philips_bloom
+    entity_id: light.slaapkamer
   mode: single
 - id: '1600803430151'
   alias: Slaapkamerlamp uit via knop op afstandbediening
@@ -282,7 +284,7 @@
   action:
   - service: light.turn_off
     data: {}
-    entity_id: light.philips_bloom
+    entity_id: light.slaapkamer
   mode: single
 - id: '1600803605636'
   alias: 'kantoor dimmen '
