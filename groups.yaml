@@ -1,10 +1,10 @@
 watch:
   name: Watch
   entities:
+    - light.slaapkamer
     - light.blob
     - light.eettafel
     - light.lamp_werkkamer
-    - light.slaapkamer
     
     
 Dafang3_1:
