@@ -3,25 +3,25 @@ bedroom_wakeup:
   sequence:
   - data:
       brightness: 1
-      entity_id: light.philips_bloom
+      entity_id: light.slaapkamer
       rgb_color:
-      - 241
       - 255
-      - 217
+      - 182
+      - 108
     service: light.turn_on
   - delay:
       seconds: 1
   - data:
       brightness: 1
-      entity_id: light.philips_bloom
+      entity_id: light.slaapkamer
       rgb_color:
-      - 241
-      - 255
-      - 217
+        - 255
+        - 182
+        - 108
     service: light.turn_on
   - data_template:
       brightness: 255
-      entity_id: light.philips_bloom
+      entity_id: light.slaapkamer
       transition: '{{ alarm_offset | multiply(60) }}'
     service: light.turn_on
   - delay:
@@ -103,10 +103,10 @@ bedroom_wakeup:
     data:
       entity_id: media_player.slaapkamer
   - service: light.turn_off
-    entity_id: light.philips_bloom
+    entity_id: light.slaapkamer
   - delay:
-      minutes: 10
-  # 39:45 na starten muziek: stop woonkamer.
+      minutes: 15
+  # 44:45 na starten muziek: stop woonkamer.
   - service: media_player.media_stop
     data:
         entity_id: media_player.woonkamer
