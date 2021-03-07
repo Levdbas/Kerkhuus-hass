@@ -20,18 +20,7 @@
     arg: eno1
   - type: disk_free
     arg: /home
-  - type: last_boot
-  
-- platform: google_travel_time
-  scan_interval: 10
-  api_key: !secret google_maps_api_key
-  origin: place_id:ChIJ9Q9i66vWxUcRdT0RSzIkMZw
-  destination: place_id:ChIJ06BR_qQ0xEcRd8UVFPb3HEs
-  options:
-    mode: transit
-    transit_mode: train
-    language: nl
-    
+  - type: last_boot   
 - platform: afvalbeheer
   wastecollector: Cyclus
   resources:

@@ -7,6 +7,8 @@ homeassistant:
     # Impacts weather/sunrise data (altitude above sea level in meters)
     elevation: !secret elevation
     unit_system: metric
+    external_url: !secret external_url
+    internal_url: !secret internal_url
     time_zone: Europe/Amsterdam
     packages: !include_dir_named packages
     customize: !include customize.yaml
@@ -14,7 +16,6 @@ default_config:
 
 # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
 http:
-    base_url: !secret duckdns
     ip_ban_enabled: true
     login_attempts_threshold: 5
     ssl_certificate: /ssl/fullchain.pem
@@ -55,19 +56,31 @@ wake_on_lan:
       addon: core_rpc_shutdown
       input: PC
 
-camera:
-  - platform: ffmpeg
-    name: DaFang3_1
-    input: -rtsp_transport tcp -i rtsp://192.168.3.11:8554/unicast
+#camera:
+#  - platform: ffmpeg
+#    name: DaFang3_1
+#    input: -rtsp_transport tcp -i rtsp://192.168.3.11:8554/unicast
     
 sonos:
   media_player:
     hosts:
       - 192.168.10.8
       - 192.168.10.9
-      
+      - 192.168.10.10
+      - 192.168.10.11
+
+input_select:
+  eettafel_scenes:
+    name: Scenes tafel
+    options:
+      - Eettafel Eten
+      - Eettafel Helder
+      - Eettafel Sfeer
+    initial: Eettafel Eten
+    icon: mdi:lightbulb-on-outline
 updater:
 system_health:
+cloud:
 notify: !include notifiers.yaml
 sensor: !include sensors.yaml
 group: !include groups.yaml

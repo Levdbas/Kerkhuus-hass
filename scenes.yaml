@@ -3,9 +3,35 @@
     light.slaapkamer:
       state: 'on'
       brightness: 255
-      xy_color: [0.581, 0.391]
-    media_player.slaapkamer:
+      xy_color:
+      - 0.581
+      - 0.391
+    media_player.sonos_slaapkamer:
       state: 'on'
       volume_level: '.08'
-      shuffle: "true"
+      shuffle: 'true'
       source: Peaceful Meditation
+  id: 654d3bd7de884a1b800ae3166c8f89a2
+- id: '1615066696150'
+  name: erik lezen
+  entities:
+    light.extended_color_light_10:
+      min_mireds: 140
+      max_mireds: 650
+      effect_list:
+      - colorloop
+      brightness: 219
+      hs_color:
+      - 44.69
+      - 56.863
+      rgb_color:
+      - 255
+      - 218
+      - 109
+      xy_color:
+      - 0.453
+      - 0.432
+      is_deconz_group: false
+      friendly_name: bedlamp Erik
+      supported_features: 63
+      state: 'on'

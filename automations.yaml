@@ -54,8 +54,8 @@
 - id: '1570216531721'
   alias: Stroom van computer onder 4 Watt
   trigger:
-  - below: 4
-    entity_id: sensor.switch_washing_machine_energy_power
+  - below: '4'
+    entity_id: sensor.switch_desk
     for: 00:10:00
     platform: numeric_state
   condition: []
@@ -65,6 +65,7 @@
     service: switch.turn_off
   - entity_id: switch.switch_music_upstairs
     service: switch.turn_off
+  mode: single
 - id: '1570300078319'
   alias: Slaapkamer lamp uit om 9 uur
   trigger:
@@ -92,11 +93,11 @@
     to: 'on'
   condition:
   - condition: template
-    value_template: "{{ is_state('person.erik_van_der_bas', ''away'') or as_timestamp(now())
-      - as_timestamp(states.person.erik_van_der_bas.last_changed) < 5*60 }}"
+    value_template: '{{ is_state(''person.erik_van_der_bas'', ''away'') or as_timestamp(now())
+      - as_timestamp(states.person.erik_van_der_bas.last_changed) < 5*60 }}'
   - condition: template
-    value_template: "{{ is_state('person.marileen', 'away') or as_timestamp(now())
-      - as_timestamp(states.person.marileen.last_changed) < 15*60 }}"
+    value_template: '{{ is_state(''person.marileen'', ''away'') or as_timestamp(now())
+      - as_timestamp(states.person.marileen.last_changed) < 15*60 }}'
   action:
   - entity_id: light.blob
     service: light.turn_on
@@ -169,15 +170,18 @@
       entity_id: light.blob
     service: light.turn_on
   - data:
-      entity_id: switch.sonoff_switch_backup
-    service: switch.turn_on
+      brightness: 30
+      color_temp: 432
+      entity_id: light.huiskamer_sfeerlicht
+    service: light.turn_on
   - delay: 00:04:00
   - data:
       entity_id: light.blob
     service: light.turn_off
   - data:
-      entity_id: switch.sonoff_switch_backup
-    service: switch.turn_off
+      entity_id: light.huiskamer_sfeerlicht
+    service: light.turn_off
+  mode: single
 - id: tasmota_auto_discovery
   alias: Sync Tasmota states on start-up - autodiscovery
   initial_state: true
@@ -304,4 +308,59 @@
         \ endif %}\n"
     service: light.turn_on
     entity_id: light.licht_werkkamer
+  mode: single
+- id: '1605035189546'
+  alias: Eettafel lamp aan met korte druk op knop
+  description: ''
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      id: button_eettafel
+      event: 1002
+  condition: []
+  action:
+  - service: light.toggle
+    data: {}
+    entity_id: light.eettafel
+  mode: single
+- id: '1605035517834'
+  alias: Eettafel lamp switch scene
+  description: Bij lange druk op de knop
+  trigger:
+  - platform: event
+    event_type: deconz_event
+    event_data:
+      id: button_eettafel
+      event: 1003
+  condition: []
+  action:
+  - service: input_select.select_next
+    data: {}
+    entity_id: input_select.eettafel_scenes
+  mode: single
+- id: '1605036830445'
+  alias: Selecteer volgende scene voor eettafel
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_select.eettafel_scenes
+  condition: []
+  action:
+  - service: scene.turn_on
+    data_template:
+      entity_id: scene.{{trigger.to_state.state | replace(" ","_") | lower}}
+  mode: single
+- id: '1613596440486'
+  alias: activeer adguard iedere avond
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:00
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 6a8aa4b9a28e4dc7b4974b55c0b48f4a
+    entity_id: switch.adguard_safe_browsing
+    domain: switch
   mode: single
