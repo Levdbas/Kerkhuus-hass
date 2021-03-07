@@ -25,11 +25,11 @@ automation:
   condition: []
   action:
   - data:
-      entity_id: media_player.slaapkamer
+      entity_id: media_player.sonos_slaapkamer
       volume_level: '.80'
     service: media_player.volume_set
   - data_template:
-      entity_id: media_player.slaapkamer
+      entity_id: media_player.sonos_slaapkamer
       language: nl
       message: "Let op, er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2', 'on') %}op de bovenverdieping{% else %}beneden{% endif %}!"
     service: tts.google_translate_say
