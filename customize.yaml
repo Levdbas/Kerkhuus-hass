@@ -4,10 +4,8 @@ binary_sensor.window_door_sensor_2:
   device_class: door
 binary_sensor.window_door_sensor_3:
   device_class: door
-  
 binary_sensor.lumi_sensor_smoke:
   device_class: smoke
-
 binary_sensor.lumi_sensor_smoke_2:
   device_class: smoke
 sensor.alarm_mon_time:
@@ -24,7 +22,6 @@ sensor.alarm_sat_time:
   icon: mdi:music
 sensor.alarm_sun_time:
   icon: mdi:music
-
 sensor.alarm_mon_time_minus_offset:
   icon: mdi:lightbulb-on
 sensor.alarm_tue_time_minus_offset:
@@ -39,3 +36,5 @@ sensor.alarm_sat_time_minus_offset:
   icon: mdi:lightbulb-on
 sensor.alarm_sun_time_minus_offset:
   icon: mdi:lightbulb-on
+group.kasten:
+  icon: mdi:wardrobe

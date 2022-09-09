@@ -1,71 +1,19 @@
-- id: '1568213287323'
-  alias: Weg in de ochtend.
-  trigger:
-  - entity_id: device_tracker.telefoon_erik
-    from: home
-    platform: state
-    to: not_home
-  - entity_id: device_tracker.oneplus5t
-    from: home
-    platform: state
-    to: not_home
-  condition:
-  - condition: state
-    entity_id: person.erik_van_der_bas
-    state: not_home
-  - condition: state
-    entity_id: person.marileen
-    state: not_home
-  action:
-  - data:
-      entity_id: all
-      language: nl
-      message: Erik, ga niet weg. Ik mis je.
-    service: tts.google_translate_say
-- id: '1568384852404'
-  alias: Zet de Stereo aan als de Chromecast begint te spelen.
-  trigger:
-  - entity_id: media_player.huiskamer
-    from: paused
-    platform: state
-    to: playing
-  - entity_id: media_player.huiskamer
-    from: 'off'
-    platform: state
-    to: playing
-  condition: []
-  action:
-  - data:
-      entity_id: switch.switch_music_downstairs
-    service: switch.turn_on
-- id: '1569138214205'
-  alias: Zet stereo uit na 15 minuten pauze
-  trigger:
-  - entity_id: media_player.huiskamer
-    for: 00:15:00
-    from: playing
-    platform: state
-    to: paused
-  condition: []
-  action:
-  - data:
-      entity_id: switch.switch_music_downstairs
-    service: switch.turn_off
 - id: '1570216531721'
-  alias: Stroom van computer onder 4 Watt
+  alias: Stroom van computer onder 5.7 Watt
   trigger:
-  - below: '4'
-    entity_id: sensor.switch_desk
-    for: 00:10:00
-    platform: numeric_state
-  condition: []
+  - platform: time
+    at: '22:00:00'
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.switch_desk_power
+    above: '0.5'
+    below: '5.7'
   action:
-  - data: {}
-    entity_id: switch.switch_washing_machine
-    service: switch.turn_off
-  - entity_id: switch.switch_music_upstairs
-    service: switch.turn_off
-  mode: single
+  - service: switch.turn_off
+    target:
+      entity_id: switch.switch_desk
+    data: {}
+  mode: restart
 - id: '1570300078319'
   alias: Slaapkamer lamp uit om 9 uur
   trigger:
@@ -79,55 +27,6 @@
   - data:
       entity_id: light.philips_bloom
     service: light.turn_off
-- id: '1571837838932'
-  alias: Blob aan als de deur open gaat en niemand thuis is
-  description: Alleen na zonsondergang
-  trigger:
-  - entity_id: binary_sensor.deur_woonkamer
-    from: 'off'
-    platform: state
-    to: 'on'
-  - entity_id: binary_sensor.deur_hal
-    from: 'off'
-    platform: state
-    to: 'on'
-  condition:
-  - condition: template
-    value_template: '{{ is_state(''person.erik_van_der_bas'', ''away'') or as_timestamp(now())
-      - as_timestamp(states.person.erik_van_der_bas.last_changed) < 5*60 }}'
-  - condition: template
-    value_template: '{{ is_state(''person.marileen'', ''away'') or as_timestamp(now())
-      - as_timestamp(states.person.marileen.last_changed) < 15*60 }}'
-  action:
-  - entity_id: light.blob
-    service: light.turn_on
-  - entity_id: light.eettafel
-    service: light.turn_on
-  mode: single
-- id: '1571839650328'
-  alias: Licht aan in hal
-  description: ''
-  trigger:
-  - entity_id: binary_sensor.deur_woonkamer
-    from: 'off'
-    platform: state
-    to: 'on'
-  - entity_id: binary_sensor.deur_hal
-    from: 'off'
-    platform: state
-    to: 'on'
-  condition:
-  - condition: state
-    entity_id: switch.sonoff_switch_hall
-    state: 'off'
-  action:
-  - data: {}
-    entity_id: switch.sonoff_switch_hall
-    service: switch.turn_on
-  - delay: 00:02:00
-  - data: {}
-    entity_id: switch.sonoff_switch_hall
-    service: switch.turn_off
 - id: '1573073003121'
   alias: badkamer dimmen
   description: Badkamer licht dimmen na 9 uur
@@ -145,43 +44,6 @@
     service: light.turn_on
     entity_id: light.badkamerlamp
   mode: single
-- id: '1574879017101'
-  alias: Blob aan bij beweging in de nacht
-  description: ''
-  trigger:
-  - entity_id: binary_sensor.motion_livingroom
-    from: 'off'
-    platform: state
-    to: 'on'
-  condition:
-  - condition: state
-    entity_id: sun.sun
-    state: below_horizon
-  - condition: state
-    entity_id: light.eettafel
-    state: 'off'
-  - condition: state
-    entity_id: light.blob
-    state: 'off'
-  action:
-  - data:
-      brightness: 44
-      color_temp: 432
-      entity_id: light.blob
-    service: light.turn_on
-  - data:
-      brightness: 30
-      color_temp: 432
-      entity_id: light.huiskamer_sfeerlicht
-    service: light.turn_on
-  - delay: 00:04:00
-  - data:
-      entity_id: light.blob
-    service: light.turn_off
-  - data:
-      entity_id: light.huiskamer_sfeerlicht
-    service: light.turn_off
-  mode: single
 - id: tasmota_auto_discovery
   alias: Sync Tasmota states on start-up - autodiscovery
   initial_state: true
@@ -193,17 +55,6 @@
     data:
       topic: tasmotas/cmnd/state
       payload: ''
-- id: '1585034107862'
-  alias: muziek boven uit om 22:00
-  description: ''
-  trigger:
-  - at: '22:00:00'
-    platform: time
-  condition: []
-  action:
-  - data: {}
-    entity_id: switch.switch_music_upstairs
-    service: switch.turn_off
 - id: '1589008788991'
   alias: Notify everyone when washingmachine is ready
   description: ''
@@ -234,12 +85,13 @@
   action:
   - service: light.turn_on
     data:
-      brightness: 250
+      brightness: 140
       rgb_color:
       - 255
-      - 255
-      - 255
-    entity_id: light.slaapkamer
+      - 163
+      - 74
+    target:
+      entity_id: light.slaapkamer
   - condition: sun
     after: sunset
   - service: light.turn_on
@@ -281,10 +133,7 @@
     event_data:
       id: dimmer_switch_boven
       event: 1002
-  condition:
-  - condition: state
-    entity_id: light.philips_bloom
-    state: 'on'
+  condition: []
   action:
   - service: light.turn_off
     data: {}
@@ -303,9 +152,9 @@
     condition: time
   action:
   - data:
-      brightness: "{%- if now().strftime('%H')| int >= 21 %}\n  100\n{%- elif now().strftime('%H')|\
-        \ int < 7 %}\n  100\n{%- elif now().strftime('%H')| int >= 7 %}\n  255\n{%-\
-        \ endif %}\n"
+      brightness: "{%- if now().strftime('%H')| int >= 21 %}\n  100\n{%- elif now().strftime('%H')|
+        int < 7 %}\n  100\n{%- elif now().strftime('%H')| int >= 7 %}\n  255\n{%-
+        endif %}\n"
     service: light.turn_on
     entity_id: light.licht_werkkamer
   mode: single
@@ -364,3 +213,221 @@
     entity_id: switch.adguard_safe_browsing
     domain: switch
   mode: single
+- id: '1631534925222'
+  alias: deurbel
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.doorbell
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.mobile_phones
+    data:
+      title: "\U0001F514 Ding Dong"
+      message: 'Er is aangebeld om {{ as_timestamp(states.binary_sensor.doorbell.last_changed)|
+        timestamp_custom(''%H:%M'') }} '
+      data:
+        ttl: 0
+        priority: high
+  - service: notify.google_cloud_message
+    data:
+      title: "\U0001F514 Ding Dong"
+      data:
+        ttl: 86400
+        priority: high
+      message: 'Er is aangebeld om {{ as_timestamp(states.binary_sensor.doorbell.last_changed)|
+        timestamp_custom(''%H:%M'') }} '
+  mode: single
+- id: '1640700155093'
+  alias: Tuinlampen aan bij beweging na zonsondergang
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 086070443767137062cb724fe2fb7f02
+    entity_id: binary_sensor.presence_33
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - condition: device
+    type: is_off
+    device_id: ba8f8b033f226415e801907bf6680ab3
+    entity_id: light.extended_color_light_1
+    domain: light
+  action:
+  - scene: scene.tuin_motion
+  - delay:
+      hours: 0
+      minutes: 3
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.tuin
+  mode: single
+- id: '1641888041487'
+  alias: Tuin - lampen uit om 11 uur
+  description: ''
+  trigger:
+  - platform: time
+    at: '23:00'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.presence_33
+    state: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  action:
+  - type: turn_off
+    device_id: 4fb9e2dcf3d984677e599ab43154c746
+    entity_id: light.tuin
+    domain: light
+  - type: turn_off
+    device_id: dbba5673c4da80c442f44ff6dd98177e
+    entity_id: switch.fairy_lights
+    domain: switch
+  mode: single
+- id: '1646557481640'
+  alias: rolluiken openen om 9 uur
+  description: ''
+  trigger:
+  - platform: time
+    at: 08:30
+  condition:
+  - condition: device
+    device_id: cde5368dd863cdcc06870589eb5015bb
+    domain: cover
+    entity_id: cover.shutter_extra_kamer
+    type: is_closed
+  action:
+  - service: cover.open_cover
+    data: {}
+    target:
+      entity_id:
+      - cover.shutter_extra_kamer
+      - cover.shutter_inloopkast
+  mode: single
+- id: '1648972159175'
+  alias: Shutters openen met afstandbediening
+  description: ''
+  trigger:
+  - device_id: 07c9bba14b094fd6ac8f98f5fc1e6b54
+    domain: deconz
+    platform: device
+    type: remote_button_short_press
+    subtype: dim_up
+  condition: []
+  action:
+  - service: cover.toggle
+    data: {}
+    target:
+      device_id:
+      - cde5368dd863cdcc06870589eb5015bb
+      - d2492938bc925615f40ed7a86fa17d4b
+  mode: single
+- id: '1658006619813'
+  alias: Kutmuis
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 4e67630b3d5d45078e156baa1007262d
+    entity_id: binary_sensor.motion_livingroom
+    domain: binary_sensor
+  - type: motion
+    platform: device
+    device_id: 3f325651d585413c8888a3eacc503889
+    entity_id: binary_sensor.motion_backup
+    domain: binary_sensor
+  condition: []
+  action:
+  - type: turn_on
+    device_id: cb83d8f91f220551ab900a3af44c257a
+    entity_id: light.extended_color_light_10
+    domain: light
+    flash: short
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.3
+    target:
+      device_id: 4b7c692253f430dcbb7674f52308a1eb
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.sonos_woonkamer
+    data:
+      media_content_id: media-source://tts/google_translate?message=Little+fucker+detected+
+      media_content_type: provider
+    metadata:
+      title: 'Little fucker detected '
+      thumbnail: https://brands.home-assistant.io/_/google_translate/logo.png
+      media_class: app
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: app
+        media_content_id: media-source://tts
+      - media_content_type: provider
+        media_content_id: media-source://tts/google_translate?message=Little+fucker+detected+
+  mode: single
+- id: smoke_detected
+  alias: Brandalarm
+  description: ''
+  trigger:
+  - type: smoke
+    platform: device
+    device_id: 904bfdae499048b49c88313e1eef19bc
+    entity_id: binary_sensor.lumi_sensor_smoke
+    domain: binary_sensor
+  - type: smoke
+    platform: device
+    device_id: 904bfdae499048b49c88313e1eef19bc
+    entity_id: binary_sensor.lumi_sensor_smoke
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: media_player.join
+    data:
+      group_members:
+      - media_player.sonos_slaapkamer
+      - media_player.sonos_woonkamer
+  - data:
+      volume_level: '.80'
+    service: media_player.volume_set
+    target:
+      entity_id:
+      - media_player.sonos_slaapkamer
+      - media_player.sonos_woonkamer
+  - data_template:
+      entity_id: media_player.sonos_slaapkamer
+      language: nl
+      message: Let op, er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2',
+        'on') %}op de bovenverdieping{% else %}beneden{% endif %}!
+    service: tts.google_translate_say
+  - service: persistent_notification.create
+    data_template:
+      message: Er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2',
+        'on') %}boven{% else %}beneden{% endif %}!
+      title: Let op, rook gedeteceerd
+  - data_template:
+      entity_id: media_player.sonos_slaapkamer
+      language: nl
+      message: Let op, er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2',
+        'on') %}op de bovenverdieping{% else %}beneden{% endif %}!
+    service: tts.google_translate_say
+  - service: notify.mobile_phones
+    data:
+      data:
+        ttl: 0
+        priority: high
+        channel: Alarm
+        importance: high
+        timeout: 20000000
+        message: Let op, er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2',
+          'on') %}op de bovenverdieping{% else %}beneden{% endif %}!

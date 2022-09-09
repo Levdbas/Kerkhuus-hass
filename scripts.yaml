@@ -15,9 +15,9 @@ bedroom_wakeup:
       brightness: 1
       entity_id: light.slaapkamer
       rgb_color:
-        - 255
-        - 182
-        - 108
+      - 255
+      - 182
+      - 108
     service: light.turn_on
   - data_template:
       brightness: 255
@@ -26,21 +26,20 @@ bedroom_wakeup:
     service: light.turn_on
   - delay:
       minutes: '{{ alarm_offset | int }}'
+  - service: media_player.unjoin
+    data:
+      entity_id: media_player.sonos_slaapkamer
   - data:
       entity_id: media_player.sonos_slaapkamer
       volume_level: '.02'
     service: media_player.volume_set
-  #- data:
-  #   entity_id: media_player.sonos_slaapkamer
-  #    sleep_time: 1600
-  #  service: sonos.set_sleep_timer
   - data:
       entity_id: media_player.sonos_slaapkamer
       shuffle: true
     service: media_player.shuffle_set
   - data:
       entity_id: media_player.sonos_slaapkamer
-      source: Rise and shine vol.6
+      source: Rise and shine vol.7
     service: media_player.select_source
   - delay:
       seconds: 15
@@ -69,9 +68,10 @@ bedroom_wakeup:
   - delay:
       seconds: 15
   - data:
-      entity_id: media_player.sonos_slaapkamer
       volume_level: '.07'
     service: media_player.volume_set
+    target:
+      entity_id: media_player.sonos_slaapkamer
   - delay:
       seconds: 15
   - data:
@@ -84,29 +84,28 @@ bedroom_wakeup:
       entity_id: media_player.sonos_slaapkamer
       volume_level: '.09'
     service: media_player.volume_set
-  # 1:45: speaker boven op juiste volume
   - delay:
       minutes: 3
-  # 4:45 na starten muziek: woonkamer set volume & join group.
   - data:
-      entity_id: media_player.sonos_woonkamer
-      volume_level: '.10'
+      volume_level: 0.1
     service: media_player.volume_set
-  - data:
-      master: media_player.sonos_slaapkamer
+    target:
       entity_id: media_player.sonos_woonkamer
-    service: sonos.join
+  - service: media_player.join
+    data:
+      group_members:
+      - media_player.sonos_slaapkamer
+      - media_player.sonos_woonkamer
   - delay:
       minutes: 25
-  # 29:45 na starten muziek: unjoin slaapkamer en zet het licht uit.
-  - service: sonos.unjoin
+  - service: media_player.unjoin
     data:
       entity_id: media_player.sonos_slaapkamer
   - service: light.turn_off
     entity_id: light.slaapkamer
   - delay:
       minutes: 15
-  # 44:45 na starten muziek: stop woonkamer.
   - service: media_player.media_stop
     data:
-        entity_id: media_player.sonos_woonkamer
+      entity_id: media_player.sonos_woonkamer
+  mode: single

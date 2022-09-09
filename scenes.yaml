@@ -13,7 +13,7 @@
       source: Peaceful Meditation
   id: 654d3bd7de884a1b800ae3166c8f89a2
 - id: '1615066696150'
-  name: erik lezen
+  name: Erik lezen
   entities:
     light.extended_color_light_10:
       min_mireds: 140
@@ -35,3 +35,118 @@
       friendly_name: bedlamp Erik
       supported_features: 63
       state: 'on'
+- id: '1640700266577'
+  name: Tuin motion
+  entities:
+    light.extended_color_light_6:
+      min_mireds: 140
+      max_mireds: 650
+      effect_list:
+      - colorloop
+      supported_color_modes:
+      - color_temp
+      - hs
+      - xy
+      color_mode: xy
+      brightness: 254
+      hs_color:
+      - 44.835
+      - 71.373
+      rgb_color:
+      - 255
+      - 209
+      - 73
+      xy_color:
+      - 0.4842
+      - 0.4471
+      is_deconz_group: false
+      friendly_name: Tuinlamp bak links 1
+      supported_features: 44
+      state: 'on'
+    light.extended_color_light_1:
+      min_mireds: 140
+      max_mireds: 650
+      effect_list:
+      - colorloop
+      supported_color_modes:
+      - color_temp
+      - hs
+      - xy
+      color_mode: xy
+      brightness: 254
+      hs_color:
+      - 44.835
+      - 71.373
+      rgb_color:
+      - 255
+      - 209
+      - 73
+      xy_color:
+      - 0.4842
+      - 0.4471
+      is_deconz_group: false
+      friendly_name: Tuinlamp bak links 2
+      supported_features: 44
+      state: 'on'
+    light.extended_color_light_16:
+      min_mireds: 140
+      max_mireds: 650
+      effect_list:
+      - colorloop
+      supported_color_modes:
+      - color_temp
+      - hs
+      - xy
+      color_mode: color_temp
+      brightness: 138
+      color_temp: 458
+      hs_color:
+      - 29.858
+      - 85.419
+      rgb_color:
+      - 255
+      - 145
+      - 37
+      xy_color:
+      - 0.581
+      - 0.387
+      is_deconz_group: false
+      friendly_name: Tuinlamp bak rechts 1
+      supported_features: 44
+      state: 'on'
+    light.extended_color_light_17:
+      min_mireds: 140
+      max_mireds: 650
+      effect_list:
+      - colorloop
+      supported_color_modes:
+      - color_temp
+      - hs
+      - xy
+      color_mode: color_temp
+      brightness: 156
+      color_temp: 458
+      hs_color:
+      - 29.858
+      - 85.419
+      rgb_color:
+      - 255
+      - 145
+      - 37
+      xy_color:
+      - 0.581
+      - 0.387
+      is_deconz_group: false
+      friendly_name: Tuinlamp bak rechts 2
+      supported_features: 44
+      state: 'on'
+    light.dimmable_light_15:
+      supported_color_modes:
+      - brightness
+      color_mode: brightness
+      brightness: 89
+      is_deconz_group: false
+      friendly_name: Schuur buiten
+      supported_features: 40
+      state: 'on'
+  icon: mdi:shovel
