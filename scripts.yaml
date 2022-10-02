@@ -1,101 +1,101 @@
 bedroom_wakeup:
   alias: Wakker worden!
   sequence:
-  - data:
+  - service: light.turn_on 
+    data:
       brightness: 1
       entity_id: light.slaapkamer
       rgb_color:
       - 255
       - 182
       - 108
-    service: light.turn_on
   - delay:
       seconds: 1
-  - data:
+  - service: light.turn_on
+    data:
       brightness: 1
       entity_id: light.slaapkamer
       rgb_color:
       - 255
       - 182
       - 108
-    service: light.turn_on
-  - data_template:
+  - service: light.turn_on
+    data_template:
       brightness: 255
       entity_id: light.slaapkamer
       transition: '{{ alarm_offset | multiply(60) }}'
-    service: light.turn_on
   - delay:
       minutes: '{{ alarm_offset | int }}'
   - service: media_player.unjoin
     data:
       entity_id: media_player.sonos_slaapkamer
-  - data:
+  - service: media_player.volume_set 
+    data:
       entity_id: media_player.sonos_slaapkamer
       volume_level: '.02'
-    service: media_player.volume_set
-  - data:
+  
+  - service: media_player.shuffle_set 
+    data:
       entity_id: media_player.sonos_slaapkamer
       shuffle: true
-    service: media_player.shuffle_set
-  - data:
+  - service: media_player.select_source
+    data:
       entity_id: media_player.sonos_slaapkamer
-      source: Rise and shine vol.7
-    service: media_player.select_source
+      source: Rise and shine vol.8
   - delay:
       seconds: 15
-  - data:
+  - service: media_player.volume_set
+    data:
       entity_id: media_player.sonos_slaapkamer
       volume_level: '.03'
-    service: media_player.volume_set
   - delay:
       seconds: 15
-  - data:
+  - service: media_player.volume_set
+    data:
       entity_id: media_player.sonos_slaapkamer
       volume_level: '.04'
-    service: media_player.volume_set
   - delay:
       seconds: 15
-  - data:
+  - service: media_player.volume_set 
+    data:
       entity_id: media_player.sonos_slaapkamer
       volume_level: '.05'
-    service: media_player.volume_set
   - delay:
       seconds: 15
-  - data:
+  - service: media_player.volume_set 
+    data:
       entity_id: media_player.sonos_slaapkamer
       volume_level: '.06'
-    service: media_player.volume_set
   - delay:
       seconds: 15
-  - data:
-      volume_level: '.07'
-    service: media_player.volume_set
-    target:
+  - service: media_player.volume_set 
+    data:
       entity_id: media_player.sonos_slaapkamer
+      volume_level: '.07'
   - delay:
       seconds: 15
-  - data:
+  - service: media_player.volume_set 
+    data:
       entity_id: media_player.sonos_slaapkamer
       volume_level: '.08'
-    service: media_player.volume_set
   - delay:
       seconds: 15
-  - data:
+  - service: media_player.volume_set 
+    data:
       entity_id: media_player.sonos_slaapkamer
       volume_level: '.09'
-    service: media_player.volume_set
   - delay:
       minutes: 3
-  - data:
-      volume_level: 0.1
-    service: media_player.volume_set
-    target:
+  - service: media_player.volume_set 
+    data:
       entity_id: media_player.sonos_woonkamer
+      volume_level: '.1'
   - service: media_player.join
+    target:
+      entity_id: media_player.sonos_slaapkamer
     data:
       group_members:
-      - media_player.sonos_slaapkamer
-      - media_player.sonos_woonkamer
+        - media_player.sonos_woonkamer
   - delay:
       minutes: 25
   - service: media_player.unjoin
