@@ -19,31 +19,12 @@
   trigger:
   - at: 09:00:00
     platform: time
-  condition:
-  - condition: state
-    entity_id: light.philips_bloom
-    state: 'on'
+  condition: []
   action:
-  - data:
-      entity_id: light.philips_bloom
+  - data: {}
     service: light.turn_off
-- id: '1573073003121'
-  alias: badkamer dimmen
-  description: Badkamer licht dimmen na 9 uur
-  trigger:
-  - entity_id: light.badkamerlamp
-    platform: state
-    to: 'on'
-  condition:
-  - after: '21:00:00'
-    before: 08:00:00
-    condition: time
-  action:
-  - data:
-      brightness: 120
-    service: light.turn_on
-    entity_id: light.badkamerlamp
-  mode: single
+    target:
+      entity_id: light.slaapkamer
 - id: tasmota_auto_discovery
   alias: Sync Tasmota states on start-up - autodiscovery
   initial_state: true
@@ -69,46 +50,13 @@
     data_template:
       message: De wasmachine is klaar sinds {{ now().strftime('%H:%M') }}
       title: Wasmachine klaar.
-- id: '1600776118689'
-  alias: Slaapkamerlamp aan via knop op afstandbediening
-  description: Licht op rood als de zon onder is.
-  trigger:
-  - platform: event
-    event_type: deconz_event
-    event_data:
-      id: dimmer_switch_boven
-      event: 1002
-  condition:
-  - condition: state
-    entity_id: light.slaapkamer
-    state: 'off'
-  action:
-  - service: light.turn_on
-    data:
-      brightness: 140
-      rgb_color:
-      - 255
-      - 163
-      - 74
-    target:
-      entity_id: light.slaapkamer
-  - condition: sun
-    after: sunset
-  - service: light.turn_on
-    data:
-      brightness: 130
-      rgb_color:
-      - 255
-      - 129
-      - 1
-    entity_id: light.slaapkamer
-  mode: single
 - id: '1600802848971'
   alias: Slaapkamerlamp rood in de avond
   description: Licht op rood als de zon onder is. (handmatig via interface)
   trigger:
   - platform: state
-    entity_id: light.philips_bloom
+    entity_id:
+    - light.color_temperature_light_12
     from: 'off'
     to: 'on'
   condition:
@@ -122,83 +70,8 @@
       - 255
       - 129
       - 1
-    entity_id: light.slaapkamer
-  mode: single
-- id: '1600803430151'
-  alias: Slaapkamerlamp uit via knop op afstandbediening
-  description: Licht op rood als de zon onder is.
-  trigger:
-  - platform: event
-    event_type: deconz_event
-    event_data:
-      id: dimmer_switch_boven
-      event: 1002
-  condition: []
-  action:
-  - service: light.turn_off
-    data: {}
-    entity_id: light.slaapkamer
-  mode: single
-- id: '1600803605636'
-  alias: 'kantoor dimmen '
-  description: kantoor licht dimmen na 9 uur
-  trigger:
-  - entity_id: light.licht_werkkamer
-    platform: state
-    to: 'on'
-  condition:
-  - after: '21:00:00'
-    before: 08:00:00
-    condition: time
-  action:
-  - data:
-      brightness: "{%- if now().strftime('%H')| int >= 21 %}\n  100\n{%- elif now().strftime('%H')|
-        int < 7 %}\n  100\n{%- elif now().strftime('%H')| int >= 7 %}\n  255\n{%-
-        endif %}\n"
-    service: light.turn_on
-    entity_id: light.licht_werkkamer
-  mode: single
-- id: '1605035189546'
-  alias: Eettafel lamp aan met korte druk op knop
-  description: ''
-  trigger:
-  - platform: event
-    event_type: deconz_event
-    event_data:
-      id: button_eettafel
-      event: 1002
-  condition: []
-  action:
-  - service: light.toggle
-    data: {}
-    entity_id: light.eettafel
-  mode: single
-- id: '1605035517834'
-  alias: Eettafel lamp switch scene
-  description: Bij lange druk op de knop
-  trigger:
-  - platform: event
-    event_type: deconz_event
-    event_data:
-      id: button_eettafel
-      event: 1003
-  condition: []
-  action:
-  - service: input_select.select_next
-    data: {}
-    entity_id: input_select.eettafel_scenes
-  mode: single
-- id: '1605036830445'
-  alias: Selecteer volgende scene voor eettafel
-  description: ''
-  trigger:
-  - platform: state
-    entity_id: input_select.eettafel_scenes
-  condition: []
-  action:
-  - service: scene.turn_on
-    data_template:
-      entity_id: scene.{{trigger.to_state.state | replace(" ","_") | lower}}
+    target:
+      entity_id: light.slaapkamer
   mode: single
 - id: '1613596440486'
   alias: activeer adguard iedere avond
@@ -210,7 +83,7 @@
   action:
   - type: turn_on
     device_id: 6a8aa4b9a28e4dc7b4974b55c0b48f4a
-    entity_id: switch.adguard_safe_browsing
+    entity_id: switch.adguard_protection
     domain: switch
   mode: single
 - id: '1631534925222'
@@ -223,14 +96,15 @@
     to: 'on'
   condition: []
   action:
-  - service: notify.mobile_phones
+  - service: notify.notify
     data:
       title: "\U0001F514 Ding Dong"
       message: 'Er is aangebeld om {{ as_timestamp(states.binary_sensor.doorbell.last_changed)|
         timestamp_custom(''%H:%M'') }} '
       data:
-        ttl: 0
-        priority: high
+        visibility: public
+        channel: Gemiddeld
+        importance: high
   - service: notify.google_cloud_message
     data:
       title: "\U0001F514 Ding Dong"
@@ -244,22 +118,23 @@
   alias: Tuinlampen aan bij beweging na zonsondergang
   description: ''
   trigger:
-  - type: motion
-    platform: device
-    device_id: 086070443767137062cb724fe2fb7f02
-    entity_id: binary_sensor.presence_33
-    domain: binary_sensor
+  - platform: state
+    entity_id:
+    - binary_sensor.presence_5
+    to: 'on'
   condition:
   - condition: state
     entity_id: sun.sun
     state: below_horizon
-  - condition: device
-    type: is_off
-    device_id: ba8f8b033f226415e801907bf6680ab3
-    entity_id: light.extended_color_light_1
-    domain: light
+  - condition: state
+    entity_id: light.tuin_rechts_1
+    state: 'off'
   action:
-  - scene: scene.tuin_motion
+  - service: light.turn_on
+    data:
+      transition: 4
+    target:
+      entity_id: light.tuin
   - delay:
       hours: 0
       minutes: 3
@@ -275,10 +150,10 @@
   description: ''
   trigger:
   - platform: time
-    at: '23:00'
+    at: '23:00:00'
   condition:
   - condition: state
-    entity_id: binary_sensor.presence_33
+    entity_id: binary_sensor.presence_5
     state: 'off'
     for:
       hours: 0
@@ -286,95 +161,13 @@
       seconds: 0
   action:
   - type: turn_off
-    device_id: 4fb9e2dcf3d984677e599ab43154c746
+    device_id: 625bc18c04b0511ba7b52f8e9c98f928
     entity_id: light.tuin
     domain: light
   - type: turn_off
     device_id: dbba5673c4da80c442f44ff6dd98177e
     entity_id: switch.fairy_lights
     domain: switch
-  mode: single
-- id: '1646557481640'
-  alias: rolluiken openen om 9 uur
-  description: ''
-  trigger:
-  - platform: time
-    at: 08:30
-  condition:
-  - condition: device
-    device_id: cde5368dd863cdcc06870589eb5015bb
-    domain: cover
-    entity_id: cover.shutter_extra_kamer
-    type: is_closed
-  action:
-  - service: cover.open_cover
-    data: {}
-    target:
-      entity_id:
-      - cover.shutter_extra_kamer
-      - cover.shutter_inloopkast
-  mode: single
-- id: '1648972159175'
-  alias: Shutters openen met afstandbediening
-  description: ''
-  trigger:
-  - device_id: 07c9bba14b094fd6ac8f98f5fc1e6b54
-    domain: deconz
-    platform: device
-    type: remote_button_short_press
-    subtype: dim_up
-  condition: []
-  action:
-  - service: cover.toggle
-    data: {}
-    target:
-      device_id:
-      - cde5368dd863cdcc06870589eb5015bb
-      - d2492938bc925615f40ed7a86fa17d4b
-  mode: single
-- id: '1658006619813'
-  alias: Kutmuis
-  description: ''
-  trigger:
-  - type: motion
-    platform: device
-    device_id: 4e67630b3d5d45078e156baa1007262d
-    entity_id: binary_sensor.motion_livingroom
-    domain: binary_sensor
-  - type: motion
-    platform: device
-    device_id: 3f325651d585413c8888a3eacc503889
-    entity_id: binary_sensor.motion_backup
-    domain: binary_sensor
-  condition: []
-  action:
-  - type: turn_on
-    device_id: cb83d8f91f220551ab900a3af44c257a
-    entity_id: light.extended_color_light_10
-    domain: light
-    flash: short
-  - service: media_player.volume_set
-    data:
-      volume_level: 0.3
-    target:
-      device_id: 4b7c692253f430dcbb7674f52308a1eb
-  - service: media_player.play_media
-    target:
-      entity_id: media_player.sonos_woonkamer
-    data:
-      media_content_id: media-source://tts/google_translate?message=Little+fucker+detected+
-      media_content_type: provider
-    metadata:
-      title: 'Little fucker detected '
-      thumbnail: https://brands.home-assistant.io/_/google_translate/logo.png
-      media_class: app
-      children_media_class:
-      navigateIds:
-      - {}
-      - media_content_type: app
-        media_content_id: media-source://tts
-      - media_content_type: provider
-        media_content_id: media-source://tts/google_translate?message=Little+fucker+detected+
   mode: single
 - id: smoke_detected
   alias: Brandalarm
@@ -431,3 +224,18 @@
         timeout: 20000000
         message: Let op, er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2',
           'on') %}op de bovenverdieping{% else %}beneden{% endif %}!
+- id: '1668094493519'
+  alias: Shutters openen om 8:30
+  description: ''
+  trigger:
+  - platform: time
+    at: 08:30:00
+  condition: []
+  action:
+  - service: cover.open_cover
+    data: {}
+    target:
+      entity_id:
+      - cover.shutter_extra_kamer
+      - cover.shutter_inloopkast
+  mode: single

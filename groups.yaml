@@ -2,12 +2,12 @@ watch:
   name: Watch
   entities:
     - light.slaapkamer
-    - light.blob
+    - light.huiskamer
     - light.eettafel
-    - light.werkkamer
     - scene.erik_lezen
     - light.huiskamer_sfeerlicht
     - cover.shutter_extra_kamer
+    - cover.shutter_inloopkast
     
 kasten:
   name: Kasten
