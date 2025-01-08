@@ -22,31 +22,18 @@ http:
     ssl_certificate: /ssl/fullchain.pem
     ssl_key: /ssl/privkey.pem
 
-# Discover some devices automatically
-discovery:
 #themes
 frontend:
   themes: !include_dir_merge_named themes
 
+mqtt_statestream:
+  base_topic: homeassistant
+  publish_attributes: true
+  publish_timestamps: true
   
 # Text to speech
 tts:
   - platform: google_translate
-
-wake_on_lan:
-  PC: "30:5a:3a:45:ed:7a"
-  name: "PC"
-  host: 192.168.2.19
-  turn_on:
-    service: hassio.addon_stdin
-    data:
-      addon: core_rpc_shutdown
-      input: PC
-  turn_off:
-    service: hassio.addon_stdin
-    data:
-      addon: core_rpc_shutdown
-      input: PC
  
 google_assistant:
   project_id: smart-home-173dd

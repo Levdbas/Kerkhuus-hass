@@ -41,7 +41,7 @@ bedroom_wakeup:
   - service: media_player.select_source
     data:
       entity_id: media_player.sonos_slaapkamer
-      source: Rise and shine vol.8
+      source: Rise and shine vol.13
   - delay:
       seconds: 15
   - service: media_player.volume_set

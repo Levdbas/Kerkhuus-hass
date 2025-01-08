@@ -7,7 +7,7 @@
   - condition: numeric_state
     entity_id: sensor.switch_desk_power
     above: '0.5'
-    below: '5.7'
+    below: 12
   action:
   - service: switch.turn_off
     target:
@@ -40,7 +40,8 @@
   alias: Notify everyone when washingmachine is ready
   description: ''
   trigger:
-  - entity_id: sensor.washer_samsung_washer_machine_state
+  - entity_id:
+    - sensor.wasmachine_washer_machine_state
     from: run
     platform: state
     to: stop
@@ -89,15 +90,14 @@
 - id: '1631534925222'
   alias: deurbel
   description: ''
-  trigger:
-  - platform: state
-    entity_id: binary_sensor.doorbell
+  triggers:
+  - entity_id: binary_sensor.doorbell
     from: 'off'
     to: 'on'
-  condition: []
-  action:
-  - service: notify.notify
-    data:
+    trigger: state
+  conditions: []
+  actions:
+  - data:
       title: "\U0001F514 Ding Dong"
       message: 'Er is aangebeld om {{ as_timestamp(states.binary_sensor.doorbell.last_changed)|
         timestamp_custom(''%H:%M'') }} '
@@ -105,14 +105,7 @@
         visibility: public
         channel: Gemiddeld
         importance: high
-  - service: notify.google_cloud_message
-    data:
-      title: "\U0001F514 Ding Dong"
-      data:
-        ttl: 86400
-        priority: high
-      message: 'Er is aangebeld om {{ as_timestamp(states.binary_sensor.doorbell.last_changed)|
-        timestamp_custom(''%H:%M'') }} '
+    action: notify.notify
   mode: single
 - id: '1640700155093'
   alias: Tuinlampen aan bij beweging na zonsondergang
@@ -126,15 +119,19 @@
   - condition: state
     entity_id: sun.sun
     state: below_horizon
-  - condition: state
-    entity_id: light.tuin_rechts_1
-    state: 'off'
+  - condition: device
+    type: is_off
+    device_id: b1bf95e3d8698908dc33f2047aacfd30
+    entity_id: 80718a64f4d078b1f39d3f65929c0688
+    domain: light
   action:
   - service: light.turn_on
     data:
       transition: 4
     target:
-      entity_id: light.tuin
+      entity_id:
+      - light.paddestoelen
+      - light.schuurlamp
   - delay:
       hours: 0
       minutes: 3
@@ -169,61 +166,6 @@
     entity_id: switch.fairy_lights
     domain: switch
   mode: single
-- id: smoke_detected
-  alias: Brandalarm
-  description: ''
-  trigger:
-  - type: smoke
-    platform: device
-    device_id: 904bfdae499048b49c88313e1eef19bc
-    entity_id: binary_sensor.lumi_sensor_smoke
-    domain: binary_sensor
-  - type: smoke
-    platform: device
-    device_id: 904bfdae499048b49c88313e1eef19bc
-    entity_id: binary_sensor.lumi_sensor_smoke
-    domain: binary_sensor
-  condition: []
-  action:
-  - service: media_player.join
-    data:
-      group_members:
-      - media_player.sonos_slaapkamer
-      - media_player.sonos_woonkamer
-  - data:
-      volume_level: '.80'
-    service: media_player.volume_set
-    target:
-      entity_id:
-      - media_player.sonos_slaapkamer
-      - media_player.sonos_woonkamer
-  - data_template:
-      entity_id: media_player.sonos_slaapkamer
-      language: nl
-      message: Let op, er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2',
-        'on') %}op de bovenverdieping{% else %}beneden{% endif %}!
-    service: tts.google_translate_say
-  - service: persistent_notification.create
-    data_template:
-      message: Er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2',
-        'on') %}boven{% else %}beneden{% endif %}!
-      title: Let op, rook gedeteceerd
-  - data_template:
-      entity_id: media_player.sonos_slaapkamer
-      language: nl
-      message: Let op, er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2',
-        'on') %}op de bovenverdieping{% else %}beneden{% endif %}!
-    service: tts.google_translate_say
-  - service: notify.mobile_phones
-    data:
-      data:
-        ttl: 0
-        priority: high
-        channel: Alarm
-        importance: high
-        timeout: 20000000
-        message: Let op, er is rook gedetecteerd {% if is_state('binary_sensor.lumi_sensor_smoke_2',
-          'on') %}op de bovenverdieping{% else %}beneden{% endif %}!
 - id: '1668094493519'
   alias: Shutters openen om 8:30
   description: ''
@@ -238,4 +180,312 @@
       entity_id:
       - cover.shutter_extra_kamer
       - cover.shutter_inloopkast
+  mode: single
+- id: '1694956435289'
+  alias: Button - shutter open
+  description: ''
+  trigger:
+  - device_id: 0ee595fc912f38226d58a03bad5e5727
+    domain: deconz
+    platform: device
+    type: remote_button_short_press
+    subtype: turn_on
+  condition:
+  - condition: and
+    conditions:
+    - condition: device
+      device_id: d2492938bc925615f40ed7a86fa17d4b
+      domain: cover
+      entity_id: 9147e65e95452916e1aa352127b07bdb
+      type: is_closed
+    - condition: device
+      device_id: cde5368dd863cdcc06870589eb5015bb
+      domain: cover
+      entity_id: 9850de8fc6ab6758851b2ae78e88900c
+      type: is_closed
+  action:
+  - device_id: d2492938bc925615f40ed7a86fa17d4b
+    domain: cover
+    entity_id: 9147e65e95452916e1aa352127b07bdb
+    type: open
+  - device_id: cde5368dd863cdcc06870589eb5015bb
+    domain: cover
+    entity_id: 9850de8fc6ab6758851b2ae78e88900c
+    type: open
+  mode: single
+- id: '1694956476215'
+  alias: Button - shutters close
+  description: ''
+  trigger:
+  - device_id: 0ee595fc912f38226d58a03bad5e5727
+    domain: deconz
+    platform: device
+    type: remote_button_short_press
+    subtype: turn_off
+  condition:
+  - condition: device
+    device_id: d2492938bc925615f40ed7a86fa17d4b
+    domain: cover
+    entity_id: 9147e65e95452916e1aa352127b07bdb
+    type: is_open
+  action:
+  - device_id: d2492938bc925615f40ed7a86fa17d4b
+    domain: cover
+    entity_id: 9147e65e95452916e1aa352127b07bdb
+    type: close
+  - device_id: cde5368dd863cdcc06870589eb5015bb
+    domain: cover
+    entity_id: 9850de8fc6ab6758851b2ae78e88900c
+    type: close
+  mode: single
+- id: '1694956600889'
+  alias: Button - shutter halfway
+  description: ''
+  trigger:
+  - device_id: 0ee595fc912f38226d58a03bad5e5727
+    domain: deconz
+    platform: device
+    type: remote_button_short_press
+    subtype: dim_up
+  condition: []
+  action:
+  - device_id: cde5368dd863cdcc06870589eb5015bb
+    domain: cover
+    entity_id: 9850de8fc6ab6758851b2ae78e88900c
+    type: set_position
+    position: 50
+  - device_id: cde5368dd863cdcc06870589eb5015bb
+    domain: cover
+    entity_id: 9850de8fc6ab6758851b2ae78e88900c
+    type: set_position
+    position: 50
+  mode: single
+- id: '1705748306009'
+  alias: 'Buttonplus: Sonos vol down'
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: buttonplus/sonos/volume
+    payload: '{"action":"down"}'
+  condition: []
+  action:
+  - service: media_player.volume_down
+    data: {}
+    target:
+      device_id: 4b7c692253f430dcbb7674f52308a1eb
+  mode: single
+- id: '1705748466627'
+  alias: 'Buttonplus: Sonos vol up'
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: buttonplus/sonos/volume
+    payload: '{"action":"up"}'
+  condition: []
+  action:
+  - service: media_player.volume_up
+    target:
+      device_id:
+      - 4b7c692253f430dcbb7674f52308a1eb
+    data: {}
+  mode: single
+- id: '1706458525347'
+  alias: 'Buttonplus: playpause'
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: buttonplus/sonos/toggle
+  condition: []
+  action:
+  - service: media_player.media_play_pause
+    metadata: {}
+    data: {}
+    target:
+      device_id: 4b7c692253f430dcbb7674f52308a1eb
+  mode: single
+- id: '1706459169124'
+  alias: 'Buttonsplus: dim lights'
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: buttonplus/lights/all
+    payload: '{"action":"scene"}'
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: device
+        type: is_off
+        device_id: 4d10eace3552670d2b9d5bc6f5d931b8
+        entity_id: 29d657130b86a3505491ad1bb2e5a520
+        domain: light
+      sequence:
+      - service: light.turn_on
+        metadata: {}
+        data:
+          brightness_pct: 60
+        target:
+          device_id: 4d10eace3552670d2b9d5bc6f5d931b8
+    - conditions: []
+      sequence:
+      - service: light.turn_on
+        metadata: {}
+        data:
+          brightness_step_pct: -10
+        target:
+          device_id: 4d10eace3552670d2b9d5bc6f5d931b8
+  mode: single
+- id: '1706460600108'
+  alias: 'Buttonplus: lights toggle'
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: buttonplus/lights/all
+    payload: '{"action":"toggle"}'
+  condition: []
+  action:
+  - service: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      device_id: 4d10eace3552670d2b9d5bc6f5d931b8
+  mode: single
+- id: '1706460753746'
+  alias: 'Buttonplus: light eettafel'
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: buttonplus/lights/eettafel
+  condition: []
+  action:
+  - service: light.toggle
+    metadata: {}
+    data: {}
+    target:
+      device_id: 644ec10f9e8fc386afcbcde04d6df7c3
+  mode: single
+- id: '1706460852147'
+  alias: 'Buttonplus: dressoir'
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: buttonplus/lights/kasten
+  condition: []
+  action:
+  - type: toggle
+    device_id: 14f774b12dcd6c1c6966c1e7deae2b4b
+    entity_id: eb0b154614a48f6795fed9eec5da1555
+    domain: switch
+  - type: toggle
+    device_id: 05c28d57bdc666e23fea8151c045b14c
+    entity_id: 0c5415e82677d7d47a4a2f57b8a90f03
+    domain: switch
+  mode: single
+- id: '1706462854910'
+  alias: 'Buttonplus: sonos next'
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: buttonplus/sonos/playnext
+  condition: []
+  action:
+  - service: media_player.media_next_track
+    target:
+      device_id:
+      - 4b7c692253f430dcbb7674f52308a1eb
+    data: {}
+  mode: single
+- id: '1706463324197'
+  alias: 'Buttonplus: lights tuin'
+  description: ''
+  trigger:
+  - platform: mqtt
+    topic: buttonplus/lights/tuin
+    payload: '{"device:"hue""}'
+    id: hue
+  - platform: mqtt
+    topic: buttonplus/lights/tuin
+    payload: '{"device:"fairy""}'
+    id: fairy
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - hue
+      sequence:
+      - type: toggle
+        device_id: 3fe03b93ededba9b2f50154e36e001dd
+        entity_id: 928e9f347672a3f53c03c16c7a18c836
+        domain: light
+      - type: toggle
+        device_id: b1bf95e3d8698908dc33f2047aacfd30
+        entity_id: 80718a64f4d078b1f39d3f65929c0688
+        domain: light
+    - conditions:
+      - condition: trigger
+        id:
+        - fairy
+      sequence:
+      - type: toggle
+        device_id: 22790fea51b28a7575b3b18f7bf3cfef
+        entity_id: 89e2c71a40366fa7d584648138379e52
+        domain: switch
+  mode: single
+- id: '1711821652089'
+  alias: 'Ecu Query devices '
+  description: ''
+  trigger:
+  - platform: time_pattern
+    minutes: '0'
+  condition: []
+  action:
+  - service: switch.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.ecu_query_device
+  mode: single
+- id: '1733333671313'
+  alias: Dim living room when playing
+  description: ''
+  triggers:
+  - device_id: 18c2205f71dbb89649b10da70dd5c89d
+    domain: media_player
+    entity_id: 75a6f515a5998106985cc6ef0fa87725
+    type: buffering
+    trigger: device
+  - device_id: 18c2205f71dbb89649b10da70dd5c89d
+    domain: media_player
+    entity_id: 75a6f515a5998106985cc6ef0fa87725
+    type: playing
+    trigger: device
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data:
+      brightness_pct: 7
+    target:
+      entity_id: light.huiskamer
+  mode: single
+- id: '1736323069962'
+  alias: Notify when trash
+  description: ''
+  triggers:
+  - trigger: time
+    at: '18:00:00'
+  conditions:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sensor.cyclus_morgen
+      state: Geen
+  actions:
+  - action: notify.notify
+    metadata: {}
+    data:
+      title: ♻️ Morgen, {{ states('sensor.cyclus_morgen') }}
+      message: Morgen wordt {{ states('sensor.cyclus_morgen') }} opgehaald.
   mode: single

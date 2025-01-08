@@ -2,19 +2,6 @@
   display_options:
       - 'time'
       - 'date'
-- platform: systemmonitor
-  resources:
-  - type: processor_use
-  - type: memory_free
-  - type: disk_use
-    arg: /home
-  - type: network_in
-    arg: eno1
-  - type: network_out
-    arg: eno1
-  - type: disk_free
-    arg: /home
-  - type: last_boot
 - platform: afvalbeheer
   wastecollector: Cyclus
   resources:
